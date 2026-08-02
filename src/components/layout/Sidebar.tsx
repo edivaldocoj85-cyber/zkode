@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { LogOut, RotateCcw, X } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { NAV_ITEMS } from "./nav";
 import { cn } from "@/lib/cn";
@@ -19,7 +19,7 @@ export function Sidebar({
   onClose: () => void;
 }) {
   const pathname = usePathname();
-  const { resetData, metrics } = useStore();
+  const { metrics } = useStore();
   const [user, setUser] = useState<string>("");
 
   useEffect(() => {
@@ -134,23 +134,16 @@ export function Sidebar({
         <div className="mt-auto flex items-center gap-2 px-4 py-4">
           <ThemeToggle />
           <button
-            onClick={resetData}
-            className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs text-muted transition-colors hover:bg-fg/[0.05] hover:text-fg"
-            title="Restaurar dados de exemplo"
-          >
-            <RotateCcw className="size-3.5" />
-            Restaurar
-          </button>
-          <button
             onClick={async () => {
               await fetch("/api/auth", { method: "DELETE" });
               window.location.href = "/login";
             }}
-            className="grid size-9 place-items-center rounded-lg border border-border text-muted transition-colors hover:bg-[var(--danger)]/10 hover:text-[var(--danger)]"
+            className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs text-muted transition-colors hover:bg-[var(--danger)]/10 hover:text-[var(--danger)]"
             title="Sair"
             aria-label="Sair do painel"
           >
             <LogOut className="size-4" />
+            Sair
           </button>
         </div>
       </aside>
