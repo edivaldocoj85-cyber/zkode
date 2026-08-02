@@ -1,13 +1,13 @@
-# Painel Gestor + Landing
+# A3 Sistemas — Plataforma
 
-Estúdio digital em Brasília — landing pública + painel interno de gestão (clientes,
-projetos, cobranças, contratos e infraestrutura).
+Landing pública + painel interno de gestão (clientes, projetos, cobranças,
+contratos e infraestrutura).
 
-- **`/`** — landing page pública (marketing, sem nome definido ainda).
+- **`/`** — landing page pública (marketing).
 - **`/login`** — acesso restrito da equipe (sem link na landing; `noindex`).
-- **`/painel`** — o sistema de gestão (protegido por login via cookie de sessão).
+- **`/painel`** — o sistema de gestão (protegido por login).
 
-Stack: Next.js 16 (App Router) · TypeScript · Tailwind v4 · Framer Motion.
+Stack: Next.js 16 (App Router) · TypeScript · Tailwind v4 · Framer Motion · Supabase.
 
 ---
 
@@ -20,38 +20,40 @@ pnpm dev
 ```
 
 Abra http://localhost:3000. O painel fica em `/painel` (redireciona pra `/login` sem sessão).
+Sem `SUPABASE_SECRET_KEY`, o app roda em modo local (dados no navegador).
 
 ## Variáveis de ambiente
 
-| Variável         | Para quê                                                       |
-| ---------------- | -------------------------------------------------------------- |
-| `PANEL_PASSWORD` | Senha compartilhada da equipe para entrar no `/login`.         |
-| `AUTH_SECRET`    | String longa aleatória que assina o cookie. Gere uma só sua.   |
+| Variável              | Para quê                                                                 |
+| --------------------- | ------------------------------------------------------------------------ |
+| `AUTH_USERS`          | Contas de admin em JSON: `[{"email":"...","password":"..."}]` (davi, junior, wendel). |
+| `AUTH_SECRET`         | String longa aleatória que assina o cookie de sessão (`openssl rand -hex 32`). |
+| `SUPABASE_URL`        | URL do projeto Supabase.                                                 |
+| `SUPABASE_SECRET_KEY` | Secret key (`sb_secret_...`). **Só no servidor** — nunca no navegador/git. |
 
-Gere um `AUTH_SECRET` forte:
+## Banco de dados
 
-```bash
-openssl rand -hex 32
-```
+O schema está em [`supabase/schema.sql`](supabase/schema.sql). Passo a passo em
+[`SUPABASE.md`](SUPABASE.md). Os dados (clientes e projetos) ficam em duas tabelas
+JSONB, acessadas só pelo servidor (rota `/api/data`, protegida pelo login).
 
 ## Publicar na Vercel
 
-1. Suba este projeto para um repositório no GitHub.
-2. Em vercel.com → **Add New → Project** → importe o repositório.
-3. Em **Environment Variables**, adicione `PANEL_PASSWORD` e `AUTH_SECRET`
-   (os mesmos nomes; use uma senha forte de verdade).
+1. Em vercel.com → **Add New → Project** → importe `A3-Sistemas/a3-platform`.
+2. Framework **Next.js** é detectado automaticamente (não precisa configurar root).
+3. Em **Environment Variables**, adicione as 4 variáveis da tabela acima
+   (use uma senha forte em `AUTH_USERS` e o `SUPABASE_SECRET_KEY` do Supabase).
 4. **Deploy**. A landing fica pública; `/painel` só abre após login.
 
-> ⚠️ **Nunca** comite `.env.local` (já está no `.gitignore`). Configure os
-> segredos direto no painel da Vercel.
+> ⚠️ `.env.local` está no `.gitignore` — os segredos vão só nas Environment
+> Variables da Vercel, nunca no repositório.
 
-## Personalizar antes de publicar
+## Personalizar
 
 - **WhatsApp**: em `src/app/page.tsx`, troque a constante `WHATSAPP` pelo número real.
-- **Senha da equipe**: defina `PANEL_PASSWORD` na Vercel.
-- **Nome/branding**: a landing usa só o ícone; quando definir o nome, é só inserir.
+- **Contas/senhas**: defina `AUTH_USERS` na Vercel com senhas fortes de verdade.
 
-## Próximos passos previstos
+## Próximo passo previsto
 
-- Migrar o armazenamento (hoje `localStorage`) para **Supabase** (dados na nuvem,
-  multiusuário). O login por senha da equipe pode então virar contas individuais + **2FA**.
+- Login individual nativo (Supabase Auth) com **2FA** — requer emails reais para os
+  3 admins (o Supabase não aceita domínio fake).
