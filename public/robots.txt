@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /painel.html
+Sitemap: https://zkode.com.br/sitemap.xml
