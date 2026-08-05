@@ -50,7 +50,7 @@ export function Sidebar({
         <div className="flex items-center gap-3 px-5 pt-6 pb-5">
           <Logo size="lg" showName={false} />
           <div className="leading-tight">
-            <p className="font-semibold tracking-tight">A3 Sistemas</p>
+            <p className="font-semibold tracking-tight">Zkode</p>
             <p className="text-xs text-subtle">Painel</p>
           </div>
           <button

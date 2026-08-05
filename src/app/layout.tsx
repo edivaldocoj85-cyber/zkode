@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "A3 Sistemas — Sites e sistemas para o seu negócio",
+  title: "Zkode — Sites, Automações e Sistemas sob Medida",
   description:
-    "A3 Sistemas: sites rápidos e sistemas sob medida para negócios locais, com domínio, hospedagem e manutenção inclusos.",
+    "Desenvolvemos sites, automações com IA e sistemas sob medida — com gestão de projetos, custos e propostas em um painel próprio. Orçamento grátis em até 48h.",
 };
 
 // Evita flash de tema claro antes da hidratação

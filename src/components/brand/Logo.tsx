@@ -1,43 +1,43 @@
 import { cn } from "@/lib/cn";
 
-const tile = {
-  sm: "size-8 rounded-[9px] text-[11px]",
-  md: "size-9 rounded-[10px] text-[12px]",
-  lg: "size-11 rounded-xl text-sm",
-};
+const markSize = { sm: "size-7", md: "size-8", lg: "size-10" };
+const textSize = { sm: "text-sm", md: "text-[15px]", lg: "text-lg" };
+
+/** Marca Zkode — hexágono roxo com losango rosa. */
+export function ZkodeMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden fill="none">
+      <path
+        d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"
+        fill="none"
+        stroke="#8B5CF6"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path d="M12 8.4 L16.2 11 L12 13.6 L7.8 11 Z" fill="#EC4899" />
+    </svg>
+  );
+}
 
 /**
- * Marca da A3 Sistemas.
- * Mark: tile escuro com "A3" em dourado, anel + brilho sutil (cara de app icon),
- * no lugar do antigo círculo dourado chapado.
+ * Logo Zkode: mark + wordmark "Zkode".
+ * O texto usa currentColor — o container define a cor conforme o fundo.
  */
 export function Logo({
   size = "md",
   showName = true,
   className,
 }: {
-  size?: keyof typeof tile;
+  size?: keyof typeof markSize;
   showName?: boolean;
   className?: string;
 }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <span
-        aria-hidden
-        className={cn(
-          "relative grid shrink-0 place-items-center overflow-hidden font-mono font-bold tracking-tighter",
-          "bg-[linear-gradient(160deg,#18202f,#0b1019)] text-accent ring-1 ring-inset ring-accent/25",
-          "shadow-[0_0_22px_-8px_var(--accent-glow)]",
-          tile[size],
-        )}
-      >
-        {/* brilho superior */}
-        <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent" />
-        <span className="relative">A3</span>
-      </span>
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      <ZkodeMark className={markSize[size]} />
       {showName && (
-        <span className="text-[15px] font-semibold tracking-tight text-fg">
-          A3 <span className="font-normal text-muted">Sistemas</span>
+        <span className={cn("font-semibold tracking-tight", textSize[size])}>
+          Zkode
         </span>
       )}
     </span>

@@ -17,10 +17,12 @@
   --border: rgba(15, 23, 42, 0.09);
   --border-strong: rgba(15, 23, 42, 0.16);
 
-  --accent: #9a6a00;
+  --accent: #7c3aed;
   --accent-fg: #ffffff;
-  --accent-glow: rgba(202, 138, 4, 0.28);
-  --primary: #1e3a8a;
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --primary: #7c3aed;
+  --brand-pink: #ec4899;
+  --brand-cyan: #0891b2;
 
   --success: #16794f;
   --warning: #a15c07;
@@ -44,10 +46,12 @@
   --border: rgba(255, 255, 255, 0.07);
   --border-strong: rgba(255, 255, 255, 0.13);
 
-  --accent: #e8bd5a;
-  --accent-fg: #1a1305;
-  --accent-glow: rgba(232, 189, 90, 0.3);
-  --primary: #6d8bff;
+  --accent: #a78bfa;
+  --accent-fg: #160b2e;
+  --accent-glow: rgba(167, 139, 250, 0.34);
+  --primary: #a78bfa;
+  --brand-pink: #f472b6;
+  --brand-cyan: #22d3ee;
 
   --success: #3ddc97;
   --warning: #fbbf24;
@@ -116,8 +120,8 @@ h3 {
 /* Textura sutil sobre o fundo escuro — dá profundidade sem pesar */
 .dark body {
   background-image:
-    radial-gradient(1200px 600px at 100% -10%, rgba(109, 139, 255, 0.06), transparent 60%),
-    radial-gradient(900px 500px at -10% 0%, rgba(232, 189, 90, 0.05), transparent 55%);
+    radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, 0.09), transparent 60%),
+    radial-gradient(900px 500px at -10% 0%, rgba(236, 72, 153, 0.06), transparent 55%);
   background-attachment: fixed;
 }
 
@@ -204,7 +208,7 @@ h3 {
   transform: translateZ(0);
 }
 .ambient::before {
-  background: radial-gradient(circle, rgba(59, 91, 219, 0.45), transparent 60%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.5), transparent 60%);
   top: -14rem;
   left: -10rem;
   animation: drift1 40s ease-in-out infinite alternate;

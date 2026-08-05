@@ -8,7 +8,7 @@ const HOJE = () =>
 
 /** Dados do prestador (você). Ajuste em um só lugar. */
 export const PRESTADOR = {
-  nome: "Studio de Sites",
+  nome: "Zkode",
   documento: "(seu CNPJ/CPF)",
   cidade: "Brasília/DF",
 };

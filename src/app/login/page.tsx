@@ -55,7 +55,7 @@ export default function LoginPage() {
             Acesso restrito
           </h1>
           <p className="mt-1 text-center text-sm text-muted">
-            Área exclusiva da equipe A3 Sistemas.
+            Área exclusiva da equipe Zkode.
           </p>
 
           <form onSubmit={submit} className="mt-6 space-y-3">

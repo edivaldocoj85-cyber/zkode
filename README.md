@@ -1,7 +1,7 @@
-# A3 Sistemas — Plataforma
+# Zkode — Plataforma
 
-Landing pública + painel interno de gestão (clientes, projetos, cobranças,
-contratos e infraestrutura).
+Landing pública (sites, automações/IA e sistemas) + painel interno de gestão
+(clientes, projetos, cobranças, contratos e infraestrutura).
 
 - **`/`** — landing page pública (marketing).
 - **`/login`** — acesso restrito da equipe (sem link na landing; `noindex`).
@@ -39,7 +39,7 @@ JSONB, acessadas só pelo servidor (rota `/api/data`, protegida pelo login).
 
 ## Publicar na Vercel
 
-1. Em vercel.com → **Add New → Project** → importe `A3-Sistemas/a3-platform`.
+1. Em vercel.com → **Add New → Project** → importe `zkode-sistemas/zkode-platform`.
 2. Framework **Next.js** é detectado automaticamente (não precisa configurar root).
 3. Em **Environment Variables**, adicione as 4 variáveis da tabela acima
    (use uma senha forte em `AUTH_USERS` e o `SUPABASE_SECRET_KEY` do Supabase).

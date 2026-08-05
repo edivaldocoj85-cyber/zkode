@@ -22,9 +22,9 @@ function getAdmins(): Admin[] {
     }
   }
   return [
-    { email: "davi@a3sistemas.com.br", password: "a3davi2026" },
-    { email: "junior@a3sistemas.com.br", password: "a3junior2026" },
-    { email: "wendel@a3sistemas.com.br", password: "a3wendel2026" },
+    { email: "davi@zkode.com.br", password: "zkode-davi-2026" },
+    { email: "junior@zkode.com.br", password: "zkode-junior-2026" },
+    { email: "wendel@zkode.com.br", password: "zkode-wendel-2026" },
   ];
 }
 
