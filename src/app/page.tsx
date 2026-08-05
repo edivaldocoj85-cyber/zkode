@@ -4,9 +4,6 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
-  ArrowUpRight,
-  Ban,
-  BarChart3,
   Boxes,
   CheckCircle2,
   Cloud,
@@ -15,7 +12,6 @@ import {
   MessageCircle,
   Plus,
   Minus,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -58,7 +54,6 @@ const NAV = [
   ["Serviços", "#servicos"],
   ["Planos", "#planos"],
   ["Processo", "#processo"],
-  ["Portal", "#portal"],
   ["FAQ", "#faq"],
 ] as const;
 
@@ -84,12 +79,6 @@ export default function LandingPage() {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <a
-              href="/login"
-              className="hidden h-10 items-center rounded-xl px-4 text-sm font-medium text-[#d6cff0] transition-colors hover:bg-white/5 sm:inline-flex"
-            >
-              Área do cliente
-            </a>
             <a
               href={WA_DEFAULT}
               target="_blank"
@@ -147,10 +136,12 @@ export default function LandingPage() {
                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                   </a>
                   <a
-                    href="/login"
+                    href={WA_DEFAULT}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex h-12 items-center gap-2 rounded-xl border border-white/14 bg-white/[0.03] px-6 text-sm font-medium text-white transition-colors hover:bg-white/[0.07]"
                   >
-                    Ver o painel de gestão
+                    Falar no WhatsApp
                   </a>
                 </div>
               </Reveal>
@@ -287,93 +278,6 @@ export default function LandingPage() {
           </div>
         </Section>
 
-        {/* ===== PORTAL ===== */}
-        <section id="portal" className="relative overflow-hidden border-y border-white/8 bg-[#0d0b1a]">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{ background: "radial-gradient(600px 300px at 85% 0%, rgba(236,72,153,0.14), transparent 70%)" }}
-          />
-          <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2 lg:items-center">
-            <Reveal>
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#c4b5fd]">Portal do cliente</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Painel do cliente e portal protegido
-              </h2>
-              <p className="mt-4 max-w-lg text-[#b4a8e3]">
-                Gerencie projetos, custos, financeiro e propostas em um só lugar — com
-                acesso restrito e conteúdo confidencial.
-              </p>
-              <ul className="mt-8 space-y-4">
-                {[
-                  { Icon: BarChart3, text: "Gestão de projetos e custos — etapas, prazos, horas, orçamento vs. realizado." },
-                  { Icon: Lock, text: "Visualização apenas na plataforma — protótipos abrem só com seu login." },
-                  { Icon: Ban, text: "Cópia e download bloqueados — marca-d'água com seu usuário." },
-                  { Icon: ShieldCheck, text: "Sigilo garantido — NDA incluso; nada sai da plataforma." },
-                ].map(({ Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3">
-                    <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-white/10 text-[#c4b5fd]">
-                      <Icon className="size-4" />
-                    </span>
-                    <span className="text-sm leading-relaxed text-[#ded7f2]">{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="/login"
-                className="mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#ec4899] px-6 text-sm font-semibold text-white shadow-[0_14px_36px_-12px_rgba(139,92,246,0.65)] transition-transform hover:-translate-y-0.5"
-              >
-                Abrir o painel de gestão
-                <ArrowUpRight className="size-4" />
-              </a>
-            </Reveal>
-
-            <Reveal delay={0.12}>
-              <div className="rounded-2xl border border-white/10 bg-[#131022] p-5 shadow-2xl">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-[#8e82bc]">zkode.com.br/painel</p>
-                    <p className="mt-0.5 font-semibold text-white">Projeto: ERP Comercial</p>
-                  </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f472b6]/15 px-2.5 py-1 text-xs font-medium text-[#f472b6]">
-                    <Lock className="size-3" /> Confidencial
-                  </span>
-                </div>
-                <div className="mt-4">
-                  <div className="flex items-center justify-between text-xs text-[#b4a8e3]">
-                    <span>Progresso</span>
-                    <span className="font-mono">68%</span>
-                  </div>
-                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full w-[68%] rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#ec4899]" />
-                  </div>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-                    <p className="text-xs text-[#8e82bc]">Orçado</p>
-                    <p className="mt-0.5 font-mono text-lg font-semibold text-white">R$ 42.000</p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-                    <p className="text-xs text-[#8e82bc]">Realizado</p>
-                    <p className="mt-0.5 font-mono text-lg font-semibold text-[#7fe3c0]">R$ 28.400</p>
-                  </div>
-                </div>
-                <div className="mt-3 space-y-2">
-                  {["Front-end A — Dashboard imersivo", "Front-end B — Clean corporativo"].map((f) => (
-                    <div key={f} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm">
-                      <span className="text-[#ded7f2]">{f}</span>
-                      <span className="text-xs text-[#c4b5fd]">Ver →</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-3 text-center text-[11px] text-[#6f6394]">
-                  Conteúdo protegido — visualização só dentro da plataforma Zkode.
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
         {/* ===== FAQ ===== */}
         <Section id="faq" eyebrow="Dúvidas" title="Perguntas frequentes">
           <div className="mx-auto max-w-3xl divide-y divide-white/8 rounded-2xl border border-white/8 bg-white/[0.02]">
@@ -431,7 +335,7 @@ function PortalMockup() {
             <span className="size-2.5 rounded-full bg-[#fbbf24]/70" />
             <span className="size-2.5 rounded-full bg-[#34d399]/70" />
             <span className="ml-3 inline-flex items-center gap-1.5 text-xs text-[#8e82bc]">
-              <ZkodeMark className="size-4" /> painel.zkode.com.br
+              <ZkodeMark className="size-4" /> zkode.com.br
             </span>
           </div>
           <div className="space-y-4 p-5">
