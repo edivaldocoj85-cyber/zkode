@@ -4,6 +4,16 @@ function sign(payload, secret) {
   return crypto.createHmac('sha256', secret).update(payload).digest('hex');
 }
 
+// Constant-time string comparison. Hashing first equalizes the buffer
+// length regardless of input length, so timingSafeEqual (which requires
+// equal-length buffers and never short-circuits) can be used safely even
+// when comparing attacker-controlled strings of arbitrary length.
+function constantTimeEqual(a, b) {
+  const ha = crypto.createHash('sha256').update(String(a)).digest();
+  const hb = crypto.createHash('sha256').update(String(b)).digest();
+  return crypto.timingSafeEqual(ha, hb);
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ ok: false, error: 'method_not_allowed' }) };
@@ -27,7 +37,7 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: JSON.stringify({ ok: false, error: 'server_not_configured' }) };
   }
 
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+  if (!constantTimeEqual(email, ADMIN_EMAIL) || !constantTimeEqual(password, ADMIN_PASSWORD)) {
     return { statusCode: 401, body: JSON.stringify({ ok: false, error: 'invalid_credentials' }) };
   }
 
