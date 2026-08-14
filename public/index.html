@@ -137,6 +137,15 @@
   .faq-item b { font-size: 15px; font-weight: 700; color: #fff; }
   .faq-item span { font-size: 14px; line-height: 1.55; color: #B4A8E3; }
 
+  /* Vídeo institucional */
+  .video-player { position: relative; max-width: 900px; margin: 0 auto; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; border: 1px solid rgba(139,92,246,.3); background: linear-gradient(150deg,rgba(139,92,246,.25),rgba(236,72,153,.15)); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+  .video-poster { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background-image: linear-gradient(rgba(139,92,246,.15) 1px,transparent 1px), linear-gradient(90deg,rgba(139,92,246,.12) 1px,transparent 1px); background-size: 32px 32px; }
+  .video-poster-badge { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #C4B5FD; padding: 6px 16px; border: 1px solid rgba(139,92,246,.45); border-radius: 999px; }
+  .video-play-btn { width: 76px; height: 76px; border-radius: 50%; border: none; cursor: pointer; background: linear-gradient(90deg,#8B5CF6,#EC4899); color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(139,92,246,.5); transition: transform .2s, box-shadow .2s; }
+  .video-play-btn:hover { transform: scale(1.08); box-shadow: 0 14px 38px rgba(236,72,153,.5); }
+  .video-el { width: 100%; height: 100%; display: block; background: #000; }
+  .video-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #B4A8E3; font-size: 14px; background: rgba(11,15,25,.92); }
+
   /* Orçamento */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 820px; }
   .form-grid input, .form-grid select, .form-grid textarea { padding: 15px 16px; border-radius: 10px; border: 1px solid rgba(139,92,246,.4); background: rgba(139,92,246,.07); color: #EDE9FE; font-size: 14.5px; font-family: inherit; }
@@ -312,6 +321,26 @@
     <div class="step-card reveal"><span class="step-num">02</span><b>Propostas de front-end</b><span class="desc">Recebe várias opções de interface no portal protegido e escolhe a preferida.</span></div>
     <div class="step-card reveal"><span class="step-num">03</span><b>Desenvolvimento</b><span class="desc">Sprints com entregas semanais, prazos e custos visíveis no seu painel.</span></div>
     <div class="step-card reveal"><span class="step-num">04</span><b>Publicação e suporte</b><span class="desc">Deploy, treinamento da equipe e sustentação com SLA definido.</span></div>
+  </div>
+</section>
+
+<section id="video" class="section">
+  <div class="section-head center">
+    <h2>Veja a Zkode em ação</h2>
+    <p>Um vídeo curto mostrando um projeto real rodando, na prática.</p>
+  </div>
+  <!-- Player leve: nada de vídeo carrega até o clique. Pra ativar quando
+       tiver a gravação, é só colocar o arquivo em public/video/zkode-demo.mp4
+       (ou trocar o data-video-src abaixo por outro caminho) — o resto já
+       funciona sem mexer em código. Sem arquivo, o clique mostra um aviso
+       amigável em vez de quebrar. -->
+  <div class="video-player reveal" data-video-src="video/zkode-demo.mp4">
+    <div class="video-poster">
+      <span class="video-poster-badge">VÍDEO INSTITUCIONAL</span>
+      <button type="button" class="video-play-btn" aria-label="Reproduzir vídeo">▶</button>
+    </div>
+    <video class="video-el" playsinline preload="none" controls hidden></video>
+    <p class="video-fallback" hidden>O vídeo ainda não está disponível — volte em breve.</p>
   </div>
 </section>
 
@@ -787,6 +816,43 @@
       if (e.target.closest && e.target.closest(hoverSelector)) cursor.classList.remove('is-hover');
     });
   })();
+
+  // ---- Vídeo institucional: player sob demanda, sem carregar nada até o clique ----
+  document.querySelectorAll('.video-player').forEach(function (wrap) {
+    var src = wrap.getAttribute('data-video-src');
+    var poster = wrap.querySelector('.video-poster');
+    var playBtn = wrap.querySelector('.video-play-btn');
+    var videoEl = wrap.querySelector('.video-el');
+    var fallback = wrap.querySelector('.video-fallback');
+    if (!src || !poster || !playBtn || !videoEl || !fallback) return;
+
+    function showFallback() {
+      videoEl.hidden = true;
+      poster.hidden = true;
+      fallback.hidden = false;
+    }
+
+    playBtn.addEventListener('click', function () {
+      playBtn.disabled = true;
+      // Confere se o arquivo existe ANTES de montar o <video> — evita
+      // mostrar um player quebrado/em branco quando ainda não há vídeo.
+      fetch(src, { method: 'HEAD' }).then(function (res) {
+        if (!res.ok) throw new Error('video not found');
+
+        var source = document.createElement('source');
+        source.src = src;
+        source.type = 'video/mp4';
+        videoEl.innerHTML = '';
+        videoEl.appendChild(source);
+        videoEl.addEventListener('error', showFallback, { once: true });
+
+        poster.hidden = true;
+        videoEl.hidden = false;
+        videoEl.load();
+        videoEl.play().catch(function () { /* autoplay bloqueado — controles nativos resolvem */ });
+      }).catch(showFallback);
+    }, { once: true });
+  });
 })();
 </script>
 </body>
