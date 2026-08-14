@@ -95,6 +95,12 @@
   .cols-projetos { grid-template-columns: 2fr 1.3fr 1fr 1fr 1fr 1.4fr .6fr; min-width: 760px; }
   .cols-financeiro { grid-template-columns: 1fr 2fr 1.6fr 1.2fr; min-width: 560px; }
   .cols-equipe { grid-template-columns: 1.4fr 2fr 1.3fr 1fr; min-width: 620px; }
+  .cols-leads { grid-template-columns: 1.2fr 1.5fr 1.3fr .8fr 1fr 1.3fr; min-width: 820px; }
+  .leads-connect { display: grid; grid-template-columns: 2fr 1.3fr auto; gap: 12px; padding: 20px; border-radius: 14px; background: rgba(139,92,246,.06); border: 1px solid rgba(139,92,246,.22); }
+  .leads-connect input { padding: 12px 14px; border-radius: 9px; border: 1px solid rgba(139,92,246,.4); background: rgba(139,92,246,.08); color: #EDE9FE; font-size: 13.5px; font-family: inherit; }
+  .leads-connect button { padding: 12px 16px; border-radius: 9px; border: none; background: linear-gradient(90deg,#8B5CF6,#EC4899); color: #fff; font-size: 13.5px; font-weight: 800; cursor: pointer; }
+  @media (max-width: 900px) { .leads-connect { grid-template-columns: 1fr; } }
+  .lead-status-select { padding: 5px 8px; border-radius: 8px; border: 1px solid rgba(139,92,246,.3); font-size: 12px; font-family: inherit; cursor: pointer; }
 
   .row-name { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .row-avatar { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(140deg,#8B5CF6,#EC4899); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; flex: 0 0 auto; }
@@ -168,7 +174,8 @@
       <span class="tag">ZK<span class="brand-text">ODE</span></span>
     </a>
 
-    <button class="menu-btn active" data-view="dash"><span class="ic">◧</span><span>Visão geral</span></button>
+    <button class="menu-btn active" data-view="leads"><span class="ic">✉</span><span>Leads</span></button>
+    <button class="menu-btn" data-view="dash"><span class="ic">◧</span><span>Visão geral</span></button>
     <button class="menu-btn" data-view="projetos"><span class="ic">▣</span><span>Projetos</span></button>
     <button class="menu-btn" data-view="financeiro"><span class="ic">◈</span><span>Financeiro</span></button>
     <button class="menu-btn" data-view="custos"><span class="ic">⊞</span><span>Custos</span></button>
@@ -187,8 +194,8 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="viewTitle">Visão geral</h1>
-        <div class="sub" id="viewSub">Indicadores consolidados de projetos e financeiro</div>
+        <h1 id="viewTitle">Leads</h1>
+        <div class="sub" id="viewSub">Solicitações de orçamento e conversas do chat</div>
       </div>
       <div class="topbar-right">
         <span class="pill">🔒 Ambiente protegido</span>
@@ -198,8 +205,26 @@
 
     <div class="content">
 
+      <!-- Leads -->
+      <section class="view active" id="view-leads">
+        <div class="leads-connect">
+          <input id="leadsBackendUrl" placeholder="URL do backend (ex: https://api.zkode.com.br)">
+          <input id="leadsApiKey" type="password" placeholder="Chave de API (X-API-Key)">
+          <button id="leadsConnect" type="button">Conectar</button>
+        </div>
+        <span class="error-text" id="leadsError">Informe a URL do backend e a chave de API pra ver os leads.</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12.5px;color:#8E82BC;" id="leadsStatusText"></span>
+          <button id="leadsRefresh" type="button" class="avancar-btn" style="padding:8px 14px;">↻ Atualizar</button>
+        </div>
+        <div class="table table-wrap">
+          <div class="table-head cols-leads"><span>NOME</span><span>CONTATO</span><span>SERVIÇO / MENSAGEM</span><span>ORIGEM</span><span>DATA</span><span>STATUS</span></div>
+          <div id="leadsBody"></div>
+        </div>
+      </section>
+
       <!-- Visão geral -->
-      <section class="view active" id="view-dash">
+      <section class="view" id="view-dash">
         <div class="kpi-grid">
           <div class="kpi"><span class="label">RECEITA TOTAL</span><span class="value up" id="kpiReceita1">R$ 0</span><span class="note">contratos e mensalidades</span></div>
           <div class="kpi"><span class="label">DESPESAS</span><span class="value down" id="kpiDespesa1">R$ 0</span><span class="note">custos diretos e fixos</span></div>
@@ -397,6 +422,7 @@
 
   // ---- Navegação ----
   var titles = {
+    leads: ['Leads', 'Solicitações de orçamento e conversas do chat'],
     dash: ['Visão geral', 'Indicadores consolidados de projetos e financeiro'],
     projetos: ['Gestão de projetos', 'Prazos, progresso e orçamento por projeto'],
     financeiro: ['Controle financeiro', 'Entradas, saídas e resultado do período'],
@@ -616,6 +642,124 @@
     renderProtecoes();
   });
 
+  // ---- Leads (dados reais vindos do backend proprio) ----
+  var LEAD_STATUSES = ['Novo', 'Em contato', 'Proposta enviada', 'Fechado', 'Perdido'];
+  var leadsUrlInput = document.getElementById('leadsBackendUrl');
+  var leadsKeyInput = document.getElementById('leadsApiKey');
+  var leadsConnectBtn = document.getElementById('leadsConnect');
+  var leadsRefreshBtn = document.getElementById('leadsRefresh');
+  var leadsErrorEl = document.getElementById('leadsError');
+  var leadsStatusText = document.getElementById('leadsStatusText');
+  var leadsBodyEl = document.getElementById('leadsBody');
+
+  // A URL e a chave nunca ficam no codigo-fonte (este arquivo e publico no
+  // GitHub) -- ficam so no localStorage deste navegador, inseridas uma vez
+  // pelo administrador.
+  function leadsConfig() {
+    return {
+      url: localStorage.getItem('zkode_leads_backend_url') || '',
+      key: localStorage.getItem('zkode_leads_api_key') || ''
+    };
+  }
+
+  (function initLeadsForm() {
+    var cfg = leadsConfig();
+    leadsUrlInput.value = cfg.url;
+    leadsKeyInput.value = cfg.key;
+  })();
+
+  leadsConnectBtn.addEventListener('click', function () {
+    var url = leadsUrlInput.value.trim().replace(/\/+$/, '');
+    var key = leadsKeyInput.value.trim();
+    if (!url || !key) return;
+    localStorage.setItem('zkode_leads_backend_url', url);
+    localStorage.setItem('zkode_leads_api_key', key);
+    loadLeads();
+  });
+
+  function leadStatusColor(status) {
+    var map = {
+      'Novo': 'background:rgba(139,92,246,.2);color:#C4B5FD;border-color:rgba(139,92,246,.4);',
+      'Em contato': 'background:rgba(251,191,36,.18);color:#FDE68A;border-color:rgba(251,191,36,.4);',
+      'Proposta enviada': 'background:rgba(6,182,212,.18);color:#67E8F9;border-color:rgba(6,182,212,.4);',
+      'Fechado': 'background:rgba(52,211,153,.18);color:#7FE3C0;border-color:rgba(52,211,153,.4);',
+      'Perdido': 'background:rgba(148,163,184,.18);color:#CBD5E1;border-color:rgba(148,163,184,.4);'
+    };
+    return map[status] || map['Novo'];
+  }
+
+  function renderLeads(leads) {
+    if (!leads.length) {
+      leadsBodyEl.innerHTML = '<div style="padding:24px;text-align:center;color:#8E82BC;font-size:13px;">Nenhum lead ainda.</div>';
+      return;
+    }
+    leadsBodyEl.innerHTML = leads.map(function (l) {
+      var contato = l.email || l.whatsapp || '—';
+      var options = LEAD_STATUSES.map(function (s) {
+        return '<option value="' + s + '"' + (s === l.status ? ' selected' : '') + '>' + s + '</option>';
+      }).join('');
+      return '<div class="table-row cols-leads">' +
+        '<span style="font-size:13.5px;font-weight:700;color:#fff;">' + esc(l.nome) + '</span>' +
+        '<span style="font-size:13px;color:#B4A8E3;">' + esc(contato) + '</span>' +
+        '<span style="font-size:13px;color:#B4A8E3;">' + esc(l.servico || l.mensagem || '—') + '</span>' +
+        '<span style="font-size:12px;color:#8E82BC;">' + esc(l.origem) + '</span>' +
+        '<span style="font-size:12px;color:#8E82BC;">' + esc((l.created_at || '').slice(0, 16).replace('T', ' ')) + '</span>' +
+        '<select class="lead-status-select" data-lead-id="' + l.id + '" style="' + leadStatusColor(l.status) + '">' + options + '</select>' +
+        '</div>';
+    }).join('');
+  }
+
+  function loadLeads() {
+    var cfg = leadsConfig();
+    if (!cfg.url || !cfg.key) {
+      leadsErrorEl.textContent = 'Informe a URL do backend e a chave de API pra ver os leads.';
+      leadsErrorEl.style.display = 'block';
+      leadsBodyEl.innerHTML = '';
+      leadsStatusText.textContent = '';
+      return;
+    }
+    leadsErrorEl.style.display = 'none';
+    leadsStatusText.textContent = 'Carregando…';
+    fetch(cfg.url + '/api/leads', { headers: { 'X-API-Key': cfg.key } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('status ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        var leads = data.leads || [];
+        renderLeads(leads);
+        leadsStatusText.textContent = leads.length + ' lead(s) — atualizado agora';
+      })
+      .catch(function () {
+        leadsErrorEl.textContent = 'Não foi possível carregar os leads. Confira a URL, a chave de API e se o servidor está acessível.';
+        leadsErrorEl.style.display = 'block';
+        leadsStatusText.textContent = '';
+      });
+  }
+
+  leadsRefreshBtn.addEventListener('click', loadLeads);
+
+  leadsBodyEl.addEventListener('change', function (e) {
+    var select = e.target.closest('[data-lead-id]');
+    if (!select) return;
+    var cfg = leadsConfig();
+    var id = select.getAttribute('data-lead-id');
+    var status = select.value;
+    select.disabled = true;
+    fetch(cfg.url + '/api/leads/' + id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': cfg.key },
+      body: JSON.stringify({ status: status })
+    }).then(function (res) {
+      if (!res.ok) throw new Error('falha ao atualizar');
+      select.setAttribute('style', leadStatusColor(status));
+    }).catch(function () {
+      alert('Não foi possível atualizar o status agora. Tente de novo em instantes.');
+    }).finally(function () {
+      select.disabled = false;
+    });
+  });
+
   renderFinanceiro();
   renderProjetos();
   renderFixos();
@@ -623,6 +767,7 @@
   renderPropostas();
   renderGestores();
   renderProtecoes();
+  loadLeads();
 })();
 </script>
 </body>

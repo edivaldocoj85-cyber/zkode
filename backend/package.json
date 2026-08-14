@@ -1,0 +1,14 @@
+{
+  "name": "zkode-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend proprio de leads da Zkode (Node + Express + SQLite), hospedado neste servidor via IIS + iisnode.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "latest",
+    "express": "latest"
+  }
+}

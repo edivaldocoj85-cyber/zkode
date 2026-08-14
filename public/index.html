@@ -424,10 +424,22 @@
   var successEl = document.getElementById('formSuccess');
   var submitBtn = document.getElementById('orcamentoSubmit');
 
+  // Backend próprio de leads (Windows/IIS + SQLite). O Netlify Forms
+  // continua ativo como rede de segurança: se este endereço estiver fora
+  // do ar, o lead ainda chega por e-mail via Netlify Forms normalmente.
+  // TODO: hoje aponta pra um túnel Cloudflare de teste (muda a cada reinício
+  // do servidor) — trocar pelo hostname permanente assim que o túnel
+  // nomeado estiver configurado com o domínio de vocês.
+  var LEADS_BACKEND_URL = 'https://funky-looks-dictionary-experiencing.trycloudflare.com';
+
   function encodeForm(data) {
     return Object.keys(data).map(function (k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
     }).join('&');
+  }
+
+  function safeFetch(url, options) {
+    return fetch(url, options).then(function (res) { return res.ok; }).catch(function () { return false; });
   }
 
   form.addEventListener('submit', function (e) {
@@ -446,18 +458,32 @@
     var payload = {};
     data.forEach(function (v, k) { payload[k] = v; });
 
-    fetch('/', {
+    var netlifyOk = safeFetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encodeForm(payload)
-    }).then(function () {
-      form.style.display = 'none';
-      successEl.style.display = 'block';
-    }).catch(function () {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar e receber propostas sem compromisso';
-      errorEl.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
-      errorEl.style.display = 'block';
+    });
+
+    var backendOk = safeFetch(LEADS_BACKEND_URL + '/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome: nome, empresa: payload.empresa, email: email, whatsapp: payload.whatsapp,
+        servico: payload.servico, investimento: payload.investimento, mensagem: payload.mensagem,
+        origem: 'orcamento'
+      })
+    });
+
+    Promise.all([netlifyOk, backendOk]).then(function (results) {
+      if (results[0] || results[1]) {
+        form.style.display = 'none';
+        successEl.style.display = 'block';
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar e receber propostas sem compromisso';
+        errorEl.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+        errorEl.style.display = 'block';
+      }
     });
   });
 
