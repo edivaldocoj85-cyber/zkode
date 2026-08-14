@@ -40,3 +40,10 @@
   Function. O botão "Criar conta" continua sendo só visual (sem backend de
   autocadastro) — acessos novos são liberados manualmente pelo administrador.
 - O painel usa dados de exemplo em memória; para persistir, conecte a um banco/API.
+- O site tem um chat com IA (balão no canto inferior direito da home) que responde
+  dúvidas sobre serviços/preços e salva o contato do visitante como lead assim que
+  ele fornece nome + WhatsApp/e-mail e confirma interesse — via a função
+  `netlify/functions/chat.js` (usa a API da Anthropic) e o formulário Netlify Forms
+  `chat-lead`. **Requer a variável de ambiente `ZKODE_ANTHROPIC_API_KEY`** (Netlify →
+  Site settings → Environment variables) com uma API key de https://console.anthropic.com —
+  sem ela o chat responde com erro. Leads caem em Netlify → Forms → chat-lead.
