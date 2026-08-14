@@ -1,4 +1,10 @@
 const crypto = require('crypto');
+const { checkRateLimit } = require('./lib/rateLimit');
+
+// Generous enough that a real admin fumbling their password a few times
+// never notices, tight enough to make brute-forcing the password impractical.
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 function sign(payload, secret) {
   return crypto.createHmac('sha256', secret).update(payload).digest('hex');
@@ -17,6 +23,15 @@ function constantTimeEqual(a, b) {
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ ok: false, error: 'method_not_allowed' }) };
+  }
+
+  const rateLimit = await checkRateLimit(event, 'login', RATE_LIMIT, RATE_WINDOW_MS);
+  if (!rateLimit.allowed) {
+    return {
+      statusCode: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': String(rateLimit.retryAfterSeconds) },
+      body: JSON.stringify({ ok: false, error: 'rate_limited', retryAfterSeconds: rateLimit.retryAfterSeconds }),
+    };
   }
 
   let email = '';

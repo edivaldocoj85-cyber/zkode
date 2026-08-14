@@ -509,9 +509,16 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: chatHistory })
     }).then(function (res) {
+      if (res.status === 429) {
+        typing.remove();
+        addChatMsg('Muitas mensagens em pouco tempo — aguarde alguns minutos e tente de novo.', 'bot');
+        chatBusy = false;
+        return null;
+      }
       if (!res.ok) throw new Error('bad_status');
       return res.json();
     }).then(function (data) {
+      if (!data) return;
       typing.remove();
       var reply = data && data.reply ? data.reply : 'Desculpe, não consegui responder agora. Tente de novo ou fale com a gente pelo formulário de orçamento.';
       addChatMsg(reply, 'bot');

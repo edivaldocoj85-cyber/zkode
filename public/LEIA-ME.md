@@ -39,6 +39,8 @@
   `ZKODE_ADMIN_PASSWORD` (env vars no Netlify) e protege `/painel.html` via Edge
   Function. O botão "Criar conta" continua sendo só visual (sem backend de
   autocadastro) — acessos novos são liberados manualmente pelo administrador.
+  Limitado a 10 tentativas / 15 min por IP (`netlify/functions/lib/rateLimit.js`,
+  usa Netlify Blobs) para dificultar força bruta.
 - O painel usa dados de exemplo em memória; para persistir, conecte a um banco/API.
 - O site tem um chat com IA (balão no canto inferior direito da home) que responde
   dúvidas sobre serviços/preços e salva o contato do visitante como lead assim que
@@ -47,3 +49,4 @@
   `chat-lead`. **Requer a variável de ambiente `ZKODE_ANTHROPIC_API_KEY`** (Netlify →
   Site settings → Environment variables) com uma API key de https://console.anthropic.com —
   sem ela o chat responde com erro. Leads caem em Netlify → Forms → chat-lead.
+  Limitado a 20 mensagens / 10 min por IP para conter custo em caso de abuso.

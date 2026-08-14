@@ -1,8 +1,13 @@
 const Anthropic = require('@anthropic-ai/sdk');
+const { checkRateLimit } = require('./lib/rateLimit');
 
 const MODEL = 'claude-opus-5';
 const MAX_TURNS = 16; // cap on messages accepted per request (client also trims)
 const MAX_MESSAGE_LENGTH = 2000;
+// Each request can trigger one or two paid API calls, so this stays tight:
+// generous enough for a real conversation, tight enough to cap runaway cost.
+const RATE_LIMIT = 20;
+const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 
 const SYSTEM_PROMPT = `Você é o assistente virtual da Zkode (zkode.com.br), uma empresa brasileira de desenvolvimento de sites, automações com IA e sistemas sob medida, com gestão de projetos, custos e propostas em um painel próprio.
 
@@ -81,6 +86,15 @@ exports.handler = async (event) => {
   const apiKey = process.env.ZKODE_ANTHROPIC_API_KEY;
   if (!apiKey) {
     return { statusCode: 500, body: JSON.stringify({ error: 'server_not_configured' }) };
+  }
+
+  const rateLimit = await checkRateLimit(event, 'chat', RATE_LIMIT, RATE_WINDOW_MS);
+  if (!rateLimit.allowed) {
+    return {
+      statusCode: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': String(rateLimit.retryAfterSeconds) },
+      body: JSON.stringify({ error: 'rate_limited', retryAfterSeconds: rateLimit.retryAfterSeconds }),
+    };
   }
 
   let messages;

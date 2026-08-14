@@ -184,6 +184,9 @@
       }
       loginBtn.disabled = false;
       loginBtn.textContent = 'Entrar no painel';
+      loginError.textContent = res.status === 429
+        ? 'Muitas tentativas seguidas — aguarde alguns minutos e tente de novo.'
+        : 'E-mail ou senha incorretos.';
       loginError.style.display = 'block';
     }).catch(function () {
       loginBtn.disabled = false;

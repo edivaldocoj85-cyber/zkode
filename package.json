@@ -3,6 +3,7 @@
   "private": true,
   "description": "Site institucional da Zkode (publicado via Netlify) — sem build step; este package.json existe apenas para declarar dependencias das Netlify Functions.",
   "dependencies": {
-    "@anthropic-ai/sdk": "latest"
+    "@anthropic-ai/sdk": "latest",
+    "@netlify/blobs": "latest"
   }
 }
