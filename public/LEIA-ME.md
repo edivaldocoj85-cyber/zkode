@@ -33,6 +33,10 @@
 
 ## Observações
 - Páginas são estáticas e autônomas (nada externo a carregar) — funcionam offline.
-- Os formulários são visuais: para receber os dados, conecte a um serviço de forms
-  (Formspree, Netlify Forms) ou a um backend próprio.
+- O formulário de orçamento (`index.html`) já envia para o Netlify Forms (formulário
+  `orcamento`, com honeypot anti-spam). Veja as submissões em Netlify → Forms.
+- O login (`login.html` → `painel.html`) é real: valida contra `ZKODE_ADMIN_EMAIL` /
+  `ZKODE_ADMIN_PASSWORD` (env vars no Netlify) e protege `/painel.html` via Edge
+  Function. O botão "Criar conta" continua sendo só visual (sem backend de
+  autocadastro) — acessos novos são liberados manualmente pelo administrador.
 - O painel usa dados de exemplo em memória; para persistir, conecte a um banco/API.
