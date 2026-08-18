@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H :: -p 5000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -27,5 +27,6 @@
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@12.0.0-rc.1+sha512.b40643c16d27d68499f41bbe64779cf1d9c80987e818e853ed21828b2a4bfed6d1ec4ab820653c911a75722e584b13dcd549396086393b5e202ad376aa5ffea7"
 }

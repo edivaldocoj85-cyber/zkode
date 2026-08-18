@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { LogOut, X } from "lucide-react";
+import { LogOut, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { NAV_ITEMS } from "./nav";
 import { cn } from "@/lib/cn";
 import { useStore } from "@/lib/store";
+import { useSidebar } from "@/lib/sidebar";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Sidebar({
@@ -20,6 +21,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const { metrics } = useStore();
+  const { collapsed, toggle } = useSidebar();
   const [user, setUser] = useState<string>("");
 
   useEffect(() => {
@@ -41,26 +43,41 @@ export function Sidebar({
 
       <aside
         className={cn(
-          "fixed z-50 flex h-dvh w-[268px] flex-col border-r border-border bg-surface",
-          "transition-transform duration-300 lg:translate-x-0",
+          "fixed z-50 flex h-dvh w-[268px] flex-col overflow-hidden border-r border-border bg-surface",
+          "transition-[transform,width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
+          collapsed && "lg:w-[84px]",
         )}
       >
         {/* Brand */}
-        <div className="flex items-center gap-3 px-5 pt-6 pb-5">
+        <div className={cn("flex items-center gap-3 px-5 pt-6 pb-5", collapsed && "lg:px-0 lg:justify-center")}>
           <Logo size="lg" showName={false} />
-          <div className="leading-tight">
+          <div className={cn("leading-tight", collapsed && "lg:hidden")}>
             <p className="font-semibold tracking-tight">Zkode</p>
             <p className="text-xs text-subtle">Painel</p>
           </div>
           <button
             onClick={onClose}
-            className="ml-auto grid size-8 place-items-center rounded-lg text-muted hover:bg-fg/[0.06] lg:hidden"
+            className="ml-auto grid size-8 shrink-0 place-items-center rounded-lg text-muted hover:bg-fg/[0.06] lg:hidden"
             aria-label="Fechar menu"
           >
             <X className="size-4" />
           </button>
         </div>
+
+        {/* Toggle colapsar (só desktop) */}
+        <button
+          onClick={toggle}
+          className={cn(
+            "mx-3 mb-2 hidden items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-subtle transition-colors hover:bg-fg/[0.06] hover:text-fg lg:flex",
+            collapsed && "justify-center px-0",
+          )}
+          aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+          title={collapsed ? "Expandir menu" : "Recolher menu"}
+        >
+          {collapsed ? <PanelLeftOpen className="size-4 shrink-0" /> : <PanelLeftClose className="size-4 shrink-0" />}
+          {!collapsed && "Recolher"}
+        </button>
 
         {/* Nav */}
         <nav className="flex flex-col gap-1 px-3">
@@ -73,9 +90,11 @@ export function Sidebar({
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
+                title={collapsed ? item.label : undefined}
                 className={cn(
                   "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                   active ? "text-fg" : "text-muted hover:text-fg",
+                  collapsed && "lg:justify-center lg:px-0",
                 )}
               >
                 {active && (
@@ -87,25 +106,30 @@ export function Sidebar({
                 )}
                 <item.icon
                   className={cn(
-                    "relative size-[18px] transition-colors",
+                    "relative size-[18px] shrink-0 transition-colors",
                     active ? "text-accent" : "text-subtle group-hover:text-fg",
                   )}
                   strokeWidth={2}
                 />
-                <span className="relative">{item.label}</span>
+                <span className={cn("relative truncate", collapsed && "lg:hidden")}>
+                  {item.label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
         {/* Mini resumo */}
-        <div className="mx-4 mt-5 rounded-xl border border-border bg-surface-2/60 p-4">
+        <div
+          className={cn(
+            "mx-4 mt-5 rounded-xl border border-border bg-surface-2/60 p-4",
+            collapsed && "lg:hidden",
+          )}
+        >
           <p className="text-xs text-subtle">Pipeline</p>
           <div className="mt-2 flex items-end justify-between">
             <div>
-              <p className="font-mono text-2xl font-semibold tnum text-fg">
-                {metrics.leads}
-              </p>
+              <p className="font-mono text-2xl font-semibold tnum text-fg">{metrics.leads}</p>
               <p className="text-xs text-muted">leads em aberto</p>
             </div>
             <div className="text-right">
@@ -119,7 +143,12 @@ export function Sidebar({
 
         {/* Usuário logado */}
         {user && (
-          <div className="mx-4 mt-4 flex items-center gap-2.5 rounded-xl border border-border bg-surface-2/50 px-3 py-2.5">
+          <div
+            className={cn(
+              "mx-4 mt-4 flex items-center gap-2.5 rounded-xl border border-border bg-surface-2/50 px-3 py-2.5",
+              collapsed && "lg:hidden",
+            )}
+          >
             <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent/15 font-mono text-[11px] font-semibold uppercase text-accent">
               {user.slice(0, 2)}
             </span>
@@ -131,19 +160,22 @@ export function Sidebar({
         )}
 
         {/* Footer */}
-        <div className="mt-auto flex items-center gap-2 px-4 py-4">
+        <div className={cn("mt-auto flex items-center gap-2 px-4 py-4", collapsed && "lg:flex-col lg:px-2")}>
           <ThemeToggle />
           <button
             onClick={async () => {
               await fetch("/api/auth", { method: "DELETE" });
               window.location.href = "/login";
             }}
-            className="flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs text-muted transition-colors hover:bg-[var(--danger)]/10 hover:text-[var(--danger)]"
+            className={cn(
+              "flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-border text-xs text-muted transition-colors hover:bg-[var(--danger)]/10 hover:text-[var(--danger)]",
+              collapsed && "lg:w-9 lg:flex-none lg:px-0",
+            )}
             title="Sair"
             aria-label="Sair do painel"
           >
-            <LogOut className="size-4" />
-            Sair
+            <LogOut className="size-4 shrink-0" />
+            <span className={cn(collapsed && "lg:hidden")}>Sair</span>
           </button>
         </div>
       </aside>

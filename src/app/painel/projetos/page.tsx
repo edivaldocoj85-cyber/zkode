@@ -9,6 +9,7 @@ import { PROJECT_TYPE_LABEL, type Project, type ProjectType } from "@/lib/types"
 import { formatCurrency, initials } from "@/lib/format";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { GithubIcon } from "@/components/projects/ProjectDrawer";
 import { cn } from "@/lib/cn";
 
@@ -67,12 +68,10 @@ export default function ProjetosPage() {
             );
           })}
         </div>
-        <button
-          onClick={openNewProject}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:border-accent/40 hover:text-fg"
-        >
-          <Plus className="size-4" /> Novo projeto
-        </button>
+        <Button variant="outline" size="sm" onClick={openNewProject}>
+          <Plus className="size-4" />
+          Novo projeto
+        </Button>
       </div>
 
       {filtered.length === 0 ? (

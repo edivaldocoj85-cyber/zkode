@@ -42,6 +42,7 @@ export function ContractModal() {
     <Modal
       open={Boolean(contractClientId)}
       onClose={closeContract}
+      size="lg"
       title={`Contrato · ${client.nome}`}
       description="Modelo preenchido. Imprima em PDF, assine no gov.br e anexe o link."
       footer={
@@ -71,20 +72,23 @@ export function ContractModal() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => updateClient(id, { contrato: "enviado" })}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-fg/[0.05] hover:text-fg"
             >
               <Send className="size-3.5" />
               Marcar enviado
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => updateClient(id, { contrato: "pendente_anexo" })}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--warning)]/30 bg-[var(--warning)]/10 px-3 py-1.5 text-xs font-medium text-[var(--warning)] transition-colors hover:bg-[var(--warning)]/20"
+              className="border-[var(--warning)]/30 bg-[var(--warning)]/10 text-[var(--warning)] hover:bg-[var(--warning)]/20"
             >
               <FileSignature className="size-3.5" />
               Assinado no gov.br (pendente de anexo)
-            </button>
+            </Button>
           </div>
 
           {/* Anexo */}
@@ -133,7 +137,7 @@ export function ContractModal() {
             ref={iframeRef}
             title="Pré-visualização do contrato"
             srcDoc={doc.html}
-            className="h-[420px] w-full"
+            className="h-[50vh] min-h-[360px] w-full sm:h-[55vh]"
           />
         </div>
       </div>
