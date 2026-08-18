@@ -13,8 +13,7 @@ colors:
   border-strong: "rgba(255,255,255,0.13)"
   accent-violet: "#a78bfa"
   accent-violet-fg: "#160b2e"
-  brand-pink: "#f472b6"
-  brand-cyan: "#22d3ee"
+  accent-deep: "#6d28d9"
   success: "#3ddc97"
   warning: "#fbbf24"
   danger: "#fb7185"
@@ -86,34 +85,66 @@ components:
 **Creative North Star: "A Sala de Controle"**
 
 Um painel de operação técnica: escuro por padrão, luz vindo de um único acento (o roxo
-`--accent`), com profundidade construída por camadas de superfície e um brilho ambiente
-lento no fundo — nunca por sombras pesadas ou cards empilhados. A landing pública usa o
-mesmo vocabulário (aurora, glass, tabular numbers) para que o visitante já veja, antes
-de entrar no painel, a mesma qualidade técnica que vai encontrar depois de virar cliente.
+`--accent`), com profundidade construída por camadas de superfície, tons do próprio roxo
+(`--accent-deep` → `--accent`) e um brilho ambiente lento no fundo — nunca por sombras
+pesadas ou cards empilhados. A landing pública usa o mesmo vocabulário (glass, tabular
+numbers, glow mono-acento) para que o visitante já veja, antes de entrar no painel, a
+mesma qualidade técnica que vai encontrar depois de virar cliente.
 
 O sistema rejeita explicitamente: gradient text ornamental, eyebrows uppercase acima de
 toda seção, hero-metric template genérico, grids de card idênticos, side-stripe borders,
-e qualquer fundo cream/sand "elegante" — este produto é escuro por identidade, não por
+qualquer fundo cream/sand "elegante", e qualquer segunda cor de marca (rosa/ciano
+saturados) — este produto é escuro por identidade e mono-acento por decisão, não por
 tendência.
 
 **Key Characteristics:**
 - Dark-first (tema claro existe, mas é o secundário — o dark é onde o produto "mora")
-- Um único acento saturado (roxo `#a78bfa`) carrega hierarquia; rosa e ciano aparecem raro, como apoio
+- **Um único acento de marca, em todo o produto** (roxo `#a78bfa` dark / `#7c3aed`
+  light) — profundidade vem de variar a *luminosidade* desse roxo (`--accent-deep` a
+  `--accent` a `--accent`/lighter), nunca de introduzir uma segunda cor saturada
 - Números sempre tabulares (`tnum`) — preços e métricas não "dançam" ao atualizar
 - Glass e blur usados com parcimônia (topbar, modais), não como textura geral
 - Motion consistente: spring sutil em interações, drift lento em elementos ambientes, sempre com fallback `prefers-reduced-motion`
 
+**Decisão de rebrand (2026-08-18, manhã):** o rosa/magenta (`#f472b6`/`#ec4899`, "Rosa
+Zkode") e o ciano (`#22d3ee`/`#0891b2`, "Ciano Zkode") foram removidos da identidade do
+**painel**. Motivo: alinhar com a linguagem visual de produtos de tecnologia B2B atuais
+(Linear, Vercel, Raycast) — mono-acento roxo/indigo, mais sóbrio e "premium SaaS".
+
+**Divergência landing × painel (2026-08-18, tarde):** a landing pública (`/`) foi
+redesenhada de novo, agora **sem roxo**, com material "metalizado" (grafite + prata
+escovada) — decisão do usuário, escopo explicitamente limitado à landing. A partir
+desta data, landing e painel usam **dois sistemas de cor distintos e intencionais**:
+
+- **Painel** (`/painel`): continua roxo `--accent` mono-acento (regras desta seção).
+- **Landing** (`/`): grafite/prata (`#0A0B0D` a `#F3F5F7`, acento `#9AA2AD`/`#C7CCD2`,
+  gradiente "chrome" `linear-gradient(110deg,#aeb4bc,#eef1f4,#ffffff,#eef1f4,#9aa2ad)`
+  para botões/CTAs, com sheen animado (`.metal-sheen`) e hover de brilho (`.shine`,
+  ambos em `globals.css`). Tokens vivem como constantes locais em `src/app/page.tsx`
+  (`CHROME_BG`/`CHROME_TEXT`), não em `globals.css`, porque não se aplicam ao painel.
+  A marca (`ZkodeMark`) aceita `stroke`/`fill` para ser recolorida em prata nessa
+  superfície — o padrão do componente continua roxo/rosa para o painel.
+  Uma marca d'água (malha do símbolo Zkode, ~5% de opacidade) roda atrás de todo o
+  conteúdo da landing (`background-image` SVG em `globals.css`-free, componente
+  `Watermark` local a `page.tsx`).
+
+Isso é uma exceção deliberada, não drift: um auditor/detector vai sinalizar as cores da
+landing como "fora da paleta do DESIGN.md" porque o DESIGN.md documenta o sistema do
+**painel**. Trate essas ocorrências específicas de `src/app/page.tsx` como esperadas.
+Se um dia as duas superfícies forem unificadas de novo, decida explicitamente qual
+sistema vence — não misture os dois.
+
 ## 2. Colors
 
 Paleta escura e contida: quase tudo é neutro-azulado (`bg`/`surface`/`ink`), e o roxo
-entra só onde precisa carregar significado (ação primária, item ativo, destaque).
+entra só onde precisa carregar significado (ação primária, item ativo, destaque). Não
+há cor de marca secundária — profundidade e gradientes usam apenas variações de
+luminosidade do próprio roxo.
 
 ### Primary
-- **Violeta Painel** (`#a78bfa` dark / `#7c3aed` light): ação primária, item de navegação ativo, foco, glow ambiente. É o único acento que aparece em >5% de qualquer tela.
-
-### Secondary
-- **Rosa Zkode** (`#f472b6` dark / `#ec4899` light): segundo tom da aurora/blobs ambientes na landing; suporte visual, nunca em texto ou botão.
-- **Ciano Zkode** (`#22d3ee` dark / `#0891b2` light): mesmo papel do rosa, terceiro ponto de luz na aurora.
+- **Violeta Painel** (`#a78bfa` dark / `#7c3aed` light): ação primária, item de navegação ativo, foco, glow ambiente. É o único acento que aparece em >5% de qualquer tela — na landing e no painel.
+- **Violeta Profundo** (`--accent-deep`, `#6d28d9` dark / `#5b21b6` light): ponta escura dos gradientes de CTA e do glow ambiente secundário — cria profundidade sem sair do roxo.
+- **Violeta Claro** (`#c4b5fd`): ponta clara dos gradientes, ícones de apoio e destaques de texto em títulos (`text-[#c4b5fd]`).
 
 ### Neutral
 - **Fundo** (`#080b12` dark / `#f4f6fb` light): base da página.
@@ -128,7 +159,7 @@ entra só onde precisa carregar significado (ação primária, item ativo, desta
 - **Sucesso** `#3ddc97`, **Alerta** `#fbbf24`, **Perigo** `#fb7185`, **Info** `#6ea8fe` — sempre em par com fundo tintado a ~12-15% de opacidade, nunca sólido em área grande.
 
 ### Named Rules
-**The One Accent Rule.** O roxo é o único acento saturado no painel. Rosa e ciano só existem no glow ambiente da landing — nunca em botão, badge ou texto do painel.
+**The One Accent Rule.** O roxo é a única cor saturada de marca em todo o produto — painel e landing. Nenhuma segunda cor de marca (rosa, ciano ou qualquer outro tom saturado fora do roxo) entra em botão, badge, gradiente, glow ou texto. Profundidade e variação vêm só de clarear/escurecer o próprio roxo.
 
 ## 3. Typography
 
@@ -205,7 +236,7 @@ função de separação, não de drama).
 ## 6. Do's and Don'ts
 
 ### Do:
-- **Do** manter um único acento saturado (roxo) por tela — rosa/ciano só na aurora ambiente.
+- **Do** manter o roxo como única cor saturada de marca em qualquer tela, painel ou landing — variar só a luminosidade (`--accent-deep` → `--accent` → `#c4b5fd`).
 - **Do** usar `tnum`/`tabular-nums` em todo número que muda.
 - **Do** respeitar `prefers-reduced-motion` em qualquer animação nova (o projeto já faz isso globalmente em `globals.css`).
 - **Do** escalar largura de modais/drawers por breakpoint e por conteúdo (`sm:max-w-md`, `lg:max-w-2xl`, `max-w-[95vw]` em telas pequenas) em vez de um `max-w-2xl` fixo.
@@ -219,3 +250,4 @@ função de separação, não de drama).
 - **Don't** aplicar `interactive` (spotlight hover) em cards que não são clicáveis — é sinal de affordance, não decoração.
 - **Don't** deixar a sidebar com largura fixa de 268px quebrando em telas <1024px sem colapsar/off-canvas (hoje já faz isso, mas qualquer extensão precisa manter esse comportamento).
 - **Don't** usar mais de um botão `primary` visível na mesma tela.
+- **Don't** reintroduzir rosa/ciano (ou qualquer segunda cor saturada) na landing ou no painel — removidos em 2026-08-18 em favor de um único acento roxo/indigo.

@@ -5,6 +5,7 @@
   "extensions": {
     "colorMeta": {
       "accent-violet": { "role": "primary", "displayName": "Violeta Painel", "canonical": "oklch(76% 0.14 291)", "tonalRamp": ["#1c1030", "#2c1b52", "#4a2c85", "#6b46b8", "#8b6ad9", "#a78bfa", "#c3aefc", "#e5dbfe"] },
+      "accent-deep": { "role": "primary", "displayName": "Violeta Profundo", "canonical": "oklch(42% 0.18 291)" },
       "bg": { "role": "neutral", "displayName": "Fundo", "canonical": "oklch(15% 0.02 260)", "tonalRamp": ["#050609", "#080b12", "#0c111a", "#10151f", "#171d2a", "#232b3d", "#3a4560", "#a3b0c6"] },
       "surface": { "role": "neutral", "displayName": "Superfície", "canonical": "oklch(20% 0.02 260)", "tonalRamp": ["#080b12", "#0c111a", "#10151f", "#171d2a", "#232b3d", "#2f394f", "#485576", "#6a7893"] },
       "success": { "role": "status", "displayName": "Sucesso", "canonical": "oklch(78% 0.15 155)" },
@@ -77,22 +78,22 @@
   ],
   "narrative": {
     "northStar": "A Sala de Controle",
-    "overview": "Um painel de operação técnica: escuro por padrão, luz vindo de um único acento (o roxo --accent), com profundidade construída por camadas de superfície e um brilho ambiente lento no fundo — nunca por sombras pesadas ou cards empilhados. A landing pública usa o mesmo vocabulário (aurora, glass, tabular numbers) para que o visitante já veja, antes de entrar no painel, a mesma qualidade técnica que vai encontrar depois de virar cliente.",
+    "overview": "Um painel de operação técnica: escuro por padrão, luz vindo de um único acento (o roxo --accent), com profundidade construída por camadas de superfície, tons do próprio roxo (--accent-deep a --accent) e um brilho ambiente lento no fundo — nunca por sombras pesadas ou cards empilhados. A landing pública usa o mesmo vocabulário (glass, tabular numbers, glow mono-acento) para que o visitante já veja, antes de entrar no painel, a mesma qualidade técnica que vai encontrar depois de virar cliente. Rosa e ciano foram removidos da identidade em 2026-08-18.",
     "keyCharacteristics": [
       "Dark-first (tema claro existe, mas é o secundário)",
-      "Um único acento saturado (roxo) carrega hierarquia",
+      "Um único acento de marca (roxo) em todo o produto — landing e painel, sem rosa/ciano",
       "Números sempre tabulares (tnum)",
       "Glass e blur usados com parcimônia",
       "Motion consistente com fallback prefers-reduced-motion"
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "O roxo é o único acento saturado no painel. Rosa e ciano só existem no glow ambiente da landing.", "section": "colors" },
+      { "name": "The One Accent Rule", "body": "O roxo é a única cor saturada de marca em todo o produto (painel e landing). Profundidade vem de variar a luminosidade do próprio roxo, nunca de uma segunda cor.", "section": "colors" },
       { "name": "The Tabular Rule", "body": "Todo número que pode mudar usa font-variant-numeric: tabular-nums.", "section": "typography" },
       { "name": "The Ambient-Not-Dramatic Rule", "body": "Glow e blur dão atmosfera, nunca simulam profundidade física agressiva.", "section": "elevation" },
       { "name": "The One Primary Rule", "body": "No máximo um botão primary visível por tela/seção.", "section": "components" }
     ],
     "dos": [
-      "Do manter um único acento saturado (roxo) por tela",
+      "Do manter o roxo como única cor de marca em qualquer tela, painel ou landing",
       "Do usar tnum/tabular-nums em todo número que muda",
       "Do respeitar prefers-reduced-motion em qualquer animação nova",
       "Do escalar largura de modais/drawers por breakpoint e conteúdo",
@@ -105,7 +106,8 @@
       "Don't usar sombra dura/3D",
       "Don't aplicar spotlight hover em cards não clicáveis",
       "Don't deixar a sidebar com largura fixa quebrando em telas <1024px sem colapsar",
-      "Don't usar mais de um botão primary visível na mesma tela"
+      "Don't usar mais de um botão primary visível na mesma tela",
+      "Don't reintroduzir rosa/ciano ou qualquer segunda cor saturada — removidos em 2026-08-18"
     ]
   }
 }

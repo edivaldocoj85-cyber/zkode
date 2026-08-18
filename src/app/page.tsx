@@ -39,6 +39,11 @@ const WA_DEFAULT = wa("Olá, Zkode! Quero um orçamento.");
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
+/** Gradiente "chrome" (prata polida) — fundo de botão primário, dark-on-light. */
+const CHROME_BG =
+  "bg-[linear-gradient(110deg,#aeb4bc_0%,#eef1f4_25%,#ffffff_45%,#eef1f4_65%,#9aa2ad_100%)]";
+const CHROME_TEXT = "text-[#0f1113]";
+
 function Reveal({
   children,
   delay = 0,
@@ -88,12 +93,20 @@ export default function LandingPage() {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
-    <div className="relative z-10 min-h-dvh bg-[#0B0F19] font-sans text-[#ECE7F7] antialiased">
+    <div className="relative z-10 min-h-dvh bg-[#0A0B0D] font-sans text-[#F3F5F7] antialiased">
+      <Watermark />
+
       {/* ===== NAV ===== */}
-      <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0B0F19]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0A0B0D]/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
+          <a
+            href="#conteudo"
+            className="sr-only rounded-lg bg-[#eef1f4] px-4 py-2 text-sm font-semibold text-[#0f1113] focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50"
+          >
+            Pular para o conteúdo
+          </a>
           <a href="#" className="inline-flex items-center gap-2 text-white">
-            <ZkodeMark className="size-8" />
+            <ZkodeMark className="size-8" stroke="#C7CCD2" fill="#EEF1F4" />
             <span className="text-lg font-semibold tracking-tight">Zkode</span>
           </a>
           <nav className="ml-4 hidden items-center gap-6 lg:flex">
@@ -101,7 +114,7 @@ export default function LandingPage() {
               <a
                 key={href}
                 href={href}
-                className="text-sm font-medium text-[#a99fcf] transition-colors hover:text-white"
+                className="text-sm font-medium text-[#9AA2AD] transition-colors hover:text-white"
               >
                 {label}
               </a>
@@ -112,7 +125,11 @@ export default function LandingPage() {
               href={WA_DEFAULT}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#ec4899] px-4 text-sm font-semibold text-white shadow-[0_8px_28px_-8px_rgba(139,92,246,0.6)] transition-[filter] hover:brightness-110 sm:inline-flex"
+              className={cn(
+                "shine metal-sheen hidden h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] transition-transform hover:-translate-y-px sm:inline-flex",
+                CHROME_BG,
+                CHROME_TEXT,
+              )}
             >
               Orçamento grátis
             </a>
@@ -134,7 +151,7 @@ export default function LandingPage() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: easeOut }}
-              className="overflow-hidden border-t border-white/8 bg-[#0B0F19] lg:hidden"
+              className="overflow-hidden border-t border-white/8 bg-[#0A0B0D] lg:hidden"
             >
               <div className="flex flex-col gap-1 px-4 py-3 sm:px-6">
                 {NAV.map(([label, href]) => (
@@ -142,7 +159,7 @@ export default function LandingPage() {
                     key={href}
                     href={href}
                     onClick={() => setNavOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-[#c9c1e6] transition-colors hover:bg-white/[0.05] hover:text-white"
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-[#A9AFB8] transition-colors hover:bg-white/[0.05] hover:text-white"
                   >
                     {label}
                   </a>
@@ -152,7 +169,11 @@ export default function LandingPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setNavOpen(false)}
-                  className="mt-2 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-sm font-semibold text-white shadow-[0_8px_28px_-8px_rgba(139,92,246,0.6)] sm:hidden"
+                  className={cn(
+                    "mt-2 inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-semibold shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] sm:hidden",
+                    CHROME_BG,
+                    CHROME_TEXT,
+                  )}
                 >
                   Orçamento grátis
                 </a>
@@ -162,7 +183,7 @@ export default function LandingPage() {
         </AnimatePresence>
       </header>
 
-      <main>
+      <main id="conteudo">
         {/* ===== HERO ===== */}
         <section className="relative overflow-hidden">
           <div
@@ -170,39 +191,50 @@ export default function LandingPage() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(720px 380px at 80% 4%, rgba(139,92,246,0.30), transparent 70%), radial-gradient(560px 320px at 8% 26%, rgba(236,72,153,0.18), transparent 70%)",
+                "radial-gradient(720px 380px at 80% 4%, rgba(154,162,173,0.16), transparent 70%), radial-gradient(560px 320px at 8% 26%, rgba(90,98,110,0.20), transparent 70%)",
             }}
           />
           <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
               <Reveal>
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#8b5cf6]/30 bg-[#8b5cf6]/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#c4b5fd]">
-                  <span className="size-1.5 rounded-full bg-[#ec4899]" />
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#9AA2AD]/25 bg-white/[0.04] px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#D3D8DD]">
+                  <span className="size-1.5 rounded-full bg-[#D3D8DD]" />
                   WEB · AUTOMAÇÕES · SISTEMAS
                 </span>
               </Reveal>
               <Reveal delay={0.08}>
                 <h1 className="mt-6 text-[2.5rem] font-semibold leading-[1.06] tracking-tight text-balance sm:text-[3.6rem]">
                   Sistemas sob medida com{" "}
-                  <span className="text-[#c4b5fd]">gestão completa</span> do seu
-                  projeto
+                  <span
+                    className={cn(
+                      "metal-sheen bg-clip-text text-transparent",
+                      "bg-[linear-gradient(110deg,#7d838c_0%,#eef1f4_25%,#ffffff_45%,#eef1f4_65%,#7d838c_100%)]",
+                    )}
+                  >
+                    gestão completa
+                  </span>{" "}
+                  do seu projeto
                 </h1>
               </Reveal>
               <Reveal delay={0.16}>
-                <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#b4a8e3]">
+                <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#A9AFB8]">
                   Desenvolvemos sites, automações com IA e sistemas — e você acompanha
-                  tudo num painel próprio: prazos, custos, financeiro e propostas de
-                  front-end, em sigilo total.
+                  tudo em um painel próprio: prazos, custos e propostas de front-end,
+                  com sigilo total.
                 </p>
               </Reveal>
               <Reveal delay={0.24}>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
                   <a
                     href="#solucoes"
-                    className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#ec4899] px-6 text-sm font-semibold text-white shadow-[0_14px_36px_-10px_rgba(139,92,246,0.65)] transition-[filter] hover:brightness-110"
+                    className={cn(
+                      "shine metal-sheen group inline-flex h-12 items-center gap-2 rounded-xl px-6 text-sm font-semibold shadow-[0_14px_32px_-10px_rgba(0,0,0,0.75)] transition-transform hover:-translate-y-px",
+                      CHROME_BG,
+                      CHROME_TEXT,
+                    )}
                   >
                     Ver exemplos na prática
-                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
                   <a
                     href={WA_DEFAULT}
@@ -222,8 +254,10 @@ export default function LandingPage() {
                     ["24/7", "monitoramento"],
                   ].map(([v, l]) => (
                     <div key={l}>
-                      <dd className="text-2xl font-semibold tracking-tight sm:text-3xl">{v}</dd>
-                      <dt className="mt-1 text-xs text-[#8e82bc] sm:text-sm">{l}</dt>
+                      <dd className="font-mono text-2xl font-semibold tracking-tight tnum text-[#EEF1F4] sm:text-3xl">
+                        {v}
+                      </dd>
+                      <dt className="mt-1 text-xs text-[#6E7580] sm:text-sm">{l}</dt>
                     </div>
                   ))}
                 </dl>
@@ -237,15 +271,15 @@ export default function LandingPage() {
         </section>
 
         {/* ===== TENDÊNCIAS (IA, automação, vídeo) ===== */}
-        <section id="tendencias" className="relative overflow-hidden border-y border-white/8 bg-white/[0.015]">
+        <section id="tendencias" className="relative scroll-mt-16 overflow-hidden border-y border-white/8 bg-white/[0.015]">
           <div className="marquee-mask border-b border-white/8 py-4">
             <div className="marquee-track">
               {[...TRENDS, ...TRENDS].map((t, i) => (
                 <span
                   key={i}
-                  className="mx-1.5 inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-[#c9c1e6]"
+                  className="mx-1.5 inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-[#A9AFB8]"
                 >
-                  <Sparkles className="size-3.5 shrink-0 text-[#a78bfa]" />
+                  <Sparkles className="size-3.5 shrink-0 text-[#A7ADB6]" aria-hidden="true" />
                   {t}
                 </span>
               ))}
@@ -258,18 +292,17 @@ export default function LandingPage() {
                 <h2 className="max-w-lg text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
                   Tecnologia de ponta, sem a complexidade pra você
                 </h2>
-                <p className="mt-4 max-w-md text-[#a99fcf]">
-                  Agentes de IA, automação e sistemas com vídeo integrado — as
-                  mesmas tendências que empresas do seu setor já estão adotando,
-                  aplicadas no seu negócio sem você precisar entender de
-                  tecnologia.
+                <p className="mt-4 max-w-md text-[#9AA2AD]">
+                  Agentes de IA, automação e sistemas com vídeo integrado — as mesmas
+                  tendências que empresas do seu setor já estão adotando, aplicadas no
+                  seu negócio sem você precisar entender de tecnologia.
                 </p>
                 <a
                   href="#solucoes"
-                  className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-[#c4b5fd] hover:text-white"
+                  className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-[#D3D8DD] hover:text-white"
                 >
                   Ver cada solução em detalhe
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                 </a>
               </Reveal>
 
@@ -281,7 +314,7 @@ export default function LandingPage() {
         </section>
 
         {/* ===== SERVIÇOS ===== */}
-        <Section id="servicos" eyebrow="O que fazemos" title="Da presença digital ao sistema que roda a operação inteira.">
+        <Section id="servicos" title="Da presença digital ao sistema que roda a operação inteira.">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: Globe, t: "Sites e landing pages", d: "Institucional, catálogo e páginas de conversão com SEO técnico e performance." },
@@ -291,11 +324,11 @@ export default function LandingPage() {
             ].map((s, i) => (
               <Reveal key={s.t} delay={i * 0.07}>
                 <div className="group h-full rounded-2xl border border-white/8 bg-white/[0.025] p-6 transition-colors hover:border-white/15 hover:bg-white/[0.04]">
-                  <span className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#ec4899] text-white shadow-[0_10px_26px_-10px_rgba(139,92,246,0.7)]">
-                    <s.icon className="size-5" strokeWidth={2} />
+                  <span className="grid size-11 place-items-center rounded-xl bg-[linear-gradient(135deg,#3d4149_0%,#6b7178_50%,#3d4149_100%)] text-white shadow-[0_10px_22px_-10px_rgba(0,0,0,0.8)]">
+                    <s.icon className="size-5" strokeWidth={2} aria-hidden="true" />
                   </span>
                   <h3 className="mt-5 font-semibold tracking-tight text-white">{s.t}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#a99fcf]">{s.d}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-[#9AA2AD]">{s.d}</p>
                 </div>
               </Reveal>
             ))}
@@ -325,31 +358,31 @@ export default function LandingPage() {
             <SolutionRow
               badge={{ icon: LayoutDashboard, label: "Sistema" }}
               title="Sistemas que dão visão real da operação"
-              description="ERP, CRM ou portal sob medida: pedidos, financeiro, equipe e até vídeo institucional ou de onboarding, tudo num painel só, com relatórios automáticos."
+              description="ERP, CRM ou portal sob medida: pedidos, financeiro, equipe e até vídeo institucional ou de onboarding, tudo em um painel só, com relatórios automáticos."
               mockup={<KanbanMockup />}
             />
           </div>
 
           <Reveal className="mt-16 flex flex-col items-center gap-4 text-center">
-            <p className="text-[#a99fcf]">Quer algo parecido pro seu negócio?</p>
+            <p className="text-[#9AA2AD]">Quer algo parecido pro seu negócio?</p>
             <a
               href="#planos"
               className="group inline-flex h-12 items-center gap-2 rounded-xl border border-white/14 bg-white/[0.03] px-6 text-sm font-semibold text-white transition-colors hover:bg-white/[0.07]"
             >
               Ver planos e preços
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
           </Reveal>
         </Section>
 
         {/* ===== PLANOS ===== */}
-        <section id="planos" className="border-y border-white/8 bg-white/[0.015]">
+        <section id="planos" className="scroll-mt-16 border-y border-white/8 bg-white/[0.015]">
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
             <Reveal>
               <h2 className="max-w-xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
                 Planos alinhados ao mercado
               </h2>
-              <p className="mt-4 max-w-xl text-[#a99fcf]">
+              <p className="mt-4 max-w-xl text-[#9AA2AD]">
                 Todos incluem propostas de front-end no portal antes de você fechar.
               </p>
             </Reveal>
@@ -415,8 +448,8 @@ export default function LandingPage() {
               ].map(([Icon, label]) => {
                 const IconComp = Icon as typeof ShieldCheck;
                 return (
-                  <div key={label as string} className="flex items-center gap-2.5 text-sm text-[#c9c1e6]">
-                    <IconComp className="size-4 shrink-0 text-[#a78bfa]" />
+                  <div key={label as string} className="flex items-center gap-2.5 text-sm text-[#A9AFB8]">
+                    <IconComp className="size-4 shrink-0 text-[#A7ADB6]" aria-hidden="true" />
                     {label as string}
                   </div>
                 );
@@ -436,9 +469,9 @@ export default function LandingPage() {
             ].map(([n, t, d], i) => (
               <Reveal key={n} delay={i * 0.07}>
                 <div>
-                  <span className="font-mono text-2xl font-bold text-[#a78bfa]">{n}</span>
+                  <span className="font-mono text-2xl font-bold tnum text-[#A7ADB6]">{n}</span>
                   <h3 className="mt-3 font-semibold tracking-tight text-white">{t}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[#a99fcf]">{d}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#9AA2AD]">{d}</p>
                 </div>
               </Reveal>
             ))}
@@ -450,7 +483,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-3xl divide-y divide-white/8 rounded-2xl border border-white/8 bg-white/[0.02]">
             {[
               ["O orçamento tem custo?", "Não. Você recebe escopo, prazo e propostas de front-end sem compromisso."],
-              ["Posso baixar os protótipos?", "Não. Eles abrem apenas dentro da plataforma, com marca-d'água e download bloqueado."],
+              ["Posso baixar os protótipos?", "Não. Eles abrem apenas dentro da plataforma, com marca-d’água e download bloqueado."],
               ["Como funciona o pagamento?", "Entrada + parcelas por etapa entregue. Automações são mensalidade sem fidelidade."],
               ["O código é meu?", "Sim, após a aprovação final e quitação você recebe o repositório completo."],
             ].map(([q, a]) => (
@@ -460,13 +493,13 @@ export default function LandingPage() {
         </Section>
 
         {/* ===== ORÇAMENTO (CTA) ===== */}
-        <section id="contato" className="border-t border-white/8 bg-white/[0.015]">
+        <section id="contato" className="scroll-mt-16 border-t border-white/8 bg-white/[0.015]">
           <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-24">
             <Reveal>
               <h2 className="text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
                 Solicite seu orçamento
               </h2>
-              <p className="mt-4 text-[#a99fcf]">
+              <p className="mt-4 text-[#9AA2AD]">
                 Sem compromisso. Conte o que você precisa e a gente cuida do resto.
               </p>
             </Reveal>
@@ -480,14 +513,34 @@ export default function LandingPage() {
 
       {/* ===== FOOTER ===== */}
       <footer className="border-t border-white/8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-[#8e82bc] sm:flex-row sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-[#6E7580] sm:flex-row sm:px-6">
           <a href="#" className="inline-flex items-center gap-2 text-white">
-            <ZkodeMark className="size-6" />
+            <ZkodeMark className="size-6" stroke="#C7CCD2" fill="#EEF1F4" />
             <span className="font-semibold">Zkode</span>
           </a>
           <span className="text-xs">© {new Date().getFullYear()} Zkode — sites, automações e sistemas sob medida</span>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/* ---------- Marca d'água de fundo ---------- */
+
+/** Malha discreta da marca Zkode atrás de todo o conteúdo — puramente decorativa. */
+function Watermark() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div
+        className="absolute -inset-[15%] opacity-[0.055]"
+        style={{
+          transform: "rotate(-9deg)",
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M60 10 L105 35 V85 L60 110 L15 85 V35 Z' fill='none' stroke='%23C7CCD2' stroke-width='3'/%3E%3Cpath d='M60 42 L81 55 L60 68 L39 55 Z' fill='%23C7CCD2'/%3E%3C/svg%3E\")",
+          backgroundRepeat: "repeat",
+          backgroundSize: "120px 120px",
+        }}
+      />
     </div>
   );
 }
@@ -498,37 +551,37 @@ function PortalMockup() {
   return (
     <div className="relative mx-auto max-w-md lg:mr-0">
       <div className="animate-floaty">
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#131022] shadow-[0_40px_90px_-40px_rgba(139,92,246,0.6)]">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#16181C] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.85)]">
           {/* topo */}
           <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.03] px-4 py-3">
-            <span className="size-2.5 rounded-full bg-[#f472b6]/70" />
+            <span className="size-2.5 rounded-full bg-[#fb7185]/70" />
             <span className="size-2.5 rounded-full bg-[#fbbf24]/70" />
             <span className="size-2.5 rounded-full bg-[#34d399]/70" />
-            <span className="ml-3 inline-flex items-center gap-1.5 text-xs text-[#8e82bc]">
-              <ZkodeMark className="size-4" /> zkode.com.br
+            <span className="ml-3 inline-flex items-center gap-1.5 text-xs text-[#6E7580]">
+              <ZkodeMark className="size-4" stroke="#9AA2AD" fill="#C7CCD2" /> zkode.com.br
             </span>
           </div>
           <div className="space-y-4 p-5">
             {/* KPIs */}
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                <p className="text-xs text-[#8e82bc]">Projetos ativos</p>
-                <p className="mt-0.5 font-mono text-xl font-semibold text-white">7</p>
+                <p className="text-xs text-[#6E7580]">Projetos ativos</p>
+                <p className="mt-0.5 font-mono text-xl font-semibold tnum text-white">7</p>
               </div>
               <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                <p className="text-xs text-[#8e82bc]">Faturado / mês</p>
-                <p className="mt-0.5 font-mono text-xl font-semibold text-[#c4b5fd]">R$ 34k</p>
+                <p className="text-xs text-[#6E7580]">Faturado / mês</p>
+                <p className="mt-0.5 font-mono text-xl font-semibold tnum text-[#D3D8DD]">R$ 34k</p>
               </div>
             </div>
             {/* projetos */}
             {[
-              ["ERP Comercial", 68, "from-[#8b5cf6] to-[#ec4899]"],
-              ["Site — Barbearia", 92, "from-[#7c3aed] to-[#22d3ee]"],
+              ["ERP Comercial", 68, "from-[#6b7178] to-[#d3d8dd]"],
+              ["Site — Barbearia", 92, "from-[#52565d] to-[#a7adb6]"],
             ].map(([nome, pct, grad]) => (
               <div key={nome as string} className="rounded-xl border border-white/8 p-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-white">{nome as string}</span>
-                  <span className="font-mono text-xs text-[#8e82bc]">{pct as number}%</span>
+                  <span className="font-mono text-xs tnum text-[#6E7580]">{pct as number}%</span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
                   <div className={cn("h-full rounded-full bg-gradient-to-r", grad as string)} style={{ width: `${pct}%` }} />
@@ -540,12 +593,12 @@ function PortalMockup() {
       </div>
 
       {/* badges flutuantes */}
-      <div className="absolute -left-4 -bottom-4 hidden rounded-xl border border-white/10 bg-[#131022] px-4 py-3 shadow-xl sm:block">
-        <p className="font-mono text-lg font-semibold text-[#34d399]">98%</p>
-        <p className="text-[11px] text-[#8e82bc]">entregas no prazo</p>
+      <div className="absolute -left-4 -bottom-4 hidden rounded-xl border border-white/10 bg-[#16181C] px-4 py-3 shadow-xl sm:block">
+        <p className="font-mono text-lg font-semibold tnum text-[#34d399]">98%</p>
+        <p className="text-[11px] text-[#6E7580]">entregas no prazo</p>
       </div>
-      <div className="absolute -right-3 -top-3 hidden items-center gap-2 rounded-xl border border-white/10 bg-[#131022] px-3 py-2 shadow-xl sm:flex">
-        <Sparkles className="size-4 text-[#ec4899]" />
+      <div className="absolute -right-3 -top-3 hidden items-center gap-2 rounded-xl border border-white/10 bg-[#16181C] px-3 py-2 shadow-xl sm:flex">
+        <Sparkles className="size-4 text-[#D3D8DD]" aria-hidden="true" />
         <span className="text-xs font-medium text-white">Nova proposta</span>
       </div>
     </div>
@@ -574,16 +627,16 @@ function SolutionRow({
         {mockup}
       </Reveal>
       <Reveal delay={0.1} className={reverse ? "lg:order-1" : undefined}>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-semibold text-[#c4b5fd]">
-          <Icon className="size-3.5" />
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-semibold text-[#D3D8DD]">
+          <Icon className="size-3.5" aria-hidden="true" />
           {badge.label}
         </span>
         <h3 className="mt-4 text-xl font-semibold tracking-tight text-balance text-white sm:text-2xl">
           {title}
         </h3>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-[#a99fcf]">{description}</p>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-[#9AA2AD]">{description}</p>
         <p className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-white/30">
-          <Check className="size-3.5 shrink-0" />
+          <Check className="size-3.5 shrink-0" aria-hidden="true" />
           Exemplo ilustrativo — o projeto real é desenhado pro seu negócio
         </p>
       </Reveal>
@@ -593,12 +646,12 @@ function SolutionRow({
 
 function BrowserMockup() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#131022] shadow-[0_30px_70px_-35px_rgba(139,92,246,0.55)]">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#16181C] shadow-[0_30px_65px_-35px_rgba(0,0,0,0.8)]">
       <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.03] px-4 py-3">
-        <span className="size-2.5 rounded-full bg-[#f472b6]/70" />
+        <span className="size-2.5 rounded-full bg-[#fb7185]/70" />
         <span className="size-2.5 rounded-full bg-[#fbbf24]/70" />
         <span className="size-2.5 rounded-full bg-[#34d399]/70" />
-        <span className="ml-3 truncate text-xs text-[#8e82bc]">exemplo-estudio.com.br</span>
+        <span className="ml-3 truncate text-xs text-[#6E7580]">exemplo-estudio.com.br</span>
       </div>
       <div className="space-y-4 p-6">
         <div className="flex items-center justify-between">
@@ -611,11 +664,17 @@ function BrowserMockup() {
         </div>
         <div className="space-y-2.5 pt-3">
           <div className="h-4 w-4/5 rounded-full bg-white/25" />
-          <div className="h-4 w-3/5 rounded-full bg-gradient-to-r from-[#a78bfa] to-[#ec4899]" />
+          <div className="h-4 w-3/5 rounded-full bg-gradient-to-r from-[#a7adb6] to-[#52565d]" />
         </div>
         <div className="h-2.5 w-full max-w-xs rounded-full bg-white/10" />
         <div className="h-2.5 w-2/3 max-w-[10rem] rounded-full bg-white/10" />
-        <div className="mt-4 inline-flex h-9 items-center rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#ec4899] px-5 text-xs font-semibold text-white">
+        <div
+          className={cn(
+            "mt-4 inline-flex h-9 items-center rounded-lg px-5 text-xs font-semibold",
+            CHROME_BG,
+            CHROME_TEXT,
+          )}
+        >
           Agendar horário
         </div>
         <div className="mt-5 grid grid-cols-3 gap-3">
@@ -636,10 +695,10 @@ function ChatMockup() {
     { from: "bot", text: "Agendado ✅ Aviso 1h antes. Precisa de mais algo?" },
   ];
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#131022] shadow-[0_30px_70px_-35px_rgba(139,92,246,0.55)]">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#16181C] shadow-[0_30px_65px_-35px_rgba(0,0,0,0.8)]">
       <div className="flex items-center gap-2.5 border-b border-white/8 bg-white/[0.03] px-4 py-3">
-        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#7c3aed] to-[#ec4899] text-white">
-          <Bot className="size-4" />
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,#3d4149_0%,#6b7178_100%)] text-white">
+          <Bot className="size-4" aria-hidden="true" />
         </span>
         <div className="min-w-0">
           <p className="truncate text-xs font-medium text-white">Assistente Zkode</p>
@@ -654,7 +713,7 @@ function ChatMockup() {
                 "max-w-[80%] rounded-2xl px-3.5 py-2 text-xs leading-relaxed",
                 b.from === "cliente"
                   ? "rounded-br-sm bg-white/10 text-white"
-                  : "rounded-bl-sm bg-gradient-to-br from-[#7c3aed]/80 to-[#ec4899]/70 text-white",
+                  : "rounded-bl-sm bg-[linear-gradient(135deg,#3d4149_0%,#6b7178_100%)] text-white",
               )}
             >
               {b.text}
@@ -679,21 +738,21 @@ function KanbanMockup() {
     ["Pronto", [{ nome: "Pedido #121", tag: "R$ 560" }]],
   ];
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#131022] shadow-[0_30px_70px_-35px_rgba(139,92,246,0.55)]">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#16181C] shadow-[0_30px_65px_-35px_rgba(0,0,0,0.8)]">
       <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.03] px-4 py-3">
-        <span className="size-2.5 rounded-full bg-[#f472b6]/70" />
+        <span className="size-2.5 rounded-full bg-[#fb7185]/70" />
         <span className="size-2.5 rounded-full bg-[#fbbf24]/70" />
         <span className="size-2.5 rounded-full bg-[#34d399]/70" />
-        <span className="ml-3 text-xs text-[#8e82bc]">painel · pedidos</span>
+        <span className="ml-3 text-xs text-[#6E7580]">painel · pedidos</span>
       </div>
       <div className="grid grid-cols-3 gap-3 p-4">
         {columns.map(([label, items]) => (
           <div key={label} className="space-y-2">
             <div className="flex items-center justify-between px-0.5">
-              <p className="truncate text-[10px] font-medium uppercase tracking-wide text-[#8e82bc]">
+              <p className="truncate text-[10px] font-medium uppercase tracking-wide text-[#6E7580]">
                 {label}
               </p>
-              <span className="shrink-0 rounded-full bg-white/[0.06] px-1.5 text-[9px] tabular-nums text-[#8e82bc]">
+              <span className="shrink-0 rounded-full bg-white/[0.06] px-1.5 text-[9px] tabular-nums text-[#6E7580]">
                 {items.length}
               </span>
             </div>
@@ -701,7 +760,7 @@ function KanbanMockup() {
               {items.map((it) => (
                 <div key={it.nome} className="rounded-lg border border-white/8 bg-white/[0.03] p-2.5">
                   <p className="truncate text-[11px] font-medium text-white">{it.nome}</p>
-                  <p className="mt-1 font-mono text-[10px] text-[#c4b5fd]">{it.tag}</p>
+                  <p className="mt-1 font-mono text-[10px] tnum text-[#D3D8DD]">{it.tag}</p>
                 </div>
               ))}
             </div>
@@ -734,15 +793,15 @@ function LiveDemoPanel() {
     <div className="relative mx-auto w-full max-w-lg">
       <NetworkIllustration />
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#131022] shadow-[0_40px_90px_-40px_rgba(139,92,246,0.6)]">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#16181C] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.85)]">
         <div className="flex items-center gap-2 border-b border-white/8 bg-white/[0.03] px-4 py-3">
-          <span className="size-2.5 rounded-full bg-[#f472b6]/70" />
+          <span className="size-2.5 rounded-full bg-[#fb7185]/70" />
           <span className="size-2.5 rounded-full bg-[#fbbf24]/70" />
           <span className="size-2.5 rounded-full bg-[#34d399]/70" />
-          <span className="ml-3 inline-flex items-center gap-1.5 text-xs text-[#8e82bc]">
-            <ZkodeMark className="size-4" /> zkode.com.br
+          <span className="ml-3 inline-flex items-center gap-1.5 text-xs text-[#6E7580]">
+            <ZkodeMark className="size-4" stroke="#9AA2AD" fill="#C7CCD2" /> zkode.com.br
           </span>
-          <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium text-[#8e82bc]">
+          <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium text-[#6E7580]">
             <span className="size-1.5 rounded-full bg-[#34d399] animate-pulse" aria-hidden />
             Simulação
           </span>
@@ -767,7 +826,7 @@ function LiveDemoPanel() {
               aria-current={i === active}
               className={cn(
                 "h-1.5 rounded-full transition-all",
-                i === active ? "w-6 bg-[#a78bfa]" : "w-1.5 bg-white/15 hover:bg-white/25",
+                i === active ? "w-6 bg-[#D3D8DD]" : "w-1.5 bg-white/15 hover:bg-white/25",
               )}
             />
           ))}
@@ -792,7 +851,7 @@ function SceneIA({ reduced }: { reduced: boolean }) {
         </div>
       </div>
       <div className="flex justify-start">
-        <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-gradient-to-br from-[#7c3aed]/80 to-[#ec4899]/70 px-3.5 py-2 text-xs text-white">
+        <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-[linear-gradient(135deg,#3d4149_0%,#6b7178_100%)] px-3.5 py-2 text-xs text-white">
           Consigo encaixar amanhã às 9h ou 15h. Qual prefere?
         </div>
       </div>
@@ -806,7 +865,7 @@ function SceneIA({ reduced }: { reduced: boolean }) {
             />
           ))}
         </span>
-        <span className="text-[10px] text-[#8e82bc]">agente de IA respondendo</span>
+        <span className="text-[10px] text-[#6E7580]">agente de IA respondendo</span>
       </div>
     </motion.div>
   );
@@ -830,20 +889,20 @@ function SceneAutomacao({ reduced }: { reduced: boolean }) {
         {steps.map((step, i) => (
           <div key={step.label} className="flex items-center gap-2 sm:gap-3">
             <div className="flex flex-col items-center gap-2">
-              <span className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-[#a78bfa]">
-                <step.icon className="size-5" />
+              <span className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-[#A7ADB6]">
+                <step.icon className="size-5" aria-hidden="true" />
               </span>
-              <span className="max-w-[74px] text-center text-[10px] leading-tight text-[#8e82bc]">
+              <span className="max-w-[74px] text-center text-[10px] leading-tight text-[#6E7580]">
                 {step.label}
               </span>
             </div>
             {i < steps.length - 1 &&
               (reduced ? (
-                <div className="h-px w-6 bg-[#a78bfa]/50 sm:w-8" />
+                <div className="h-px w-6 bg-[#A7ADB6]/50 sm:w-8" />
               ) : (
                 <div className="relative h-px w-6 overflow-hidden bg-white/10 sm:w-8">
                   <motion.span
-                    className="absolute inset-y-0 left-0 w-3 rounded-full bg-[#a78bfa]"
+                    className="absolute inset-y-0 left-0 w-3 rounded-full bg-[#D3D8DD]"
                     animate={{ left: ["-20%", "100%"] }}
                     transition={{
                       duration: 1.3,
@@ -857,7 +916,7 @@ function SceneAutomacao({ reduced }: { reduced: boolean }) {
           </div>
         ))}
       </div>
-      <p className="text-center text-[11px] text-[#8e82bc]">
+      <p className="text-center text-[11px] text-[#6E7580]">
         Disparo automático, sem intervenção manual
       </p>
     </motion.div>
@@ -873,14 +932,14 @@ function SceneVideo({ reduced }: { reduced: boolean }) {
       transition={{ duration: 0.35, ease: easeOut }}
       className="flex h-full flex-col justify-center gap-3"
     >
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-[#1c1030] to-[#2c1b52]">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(135deg,#1a1c20_0%,#26292e_100%)]">
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.span
             className="grid size-12 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm"
             animate={reduced ? undefined : { scale: [1, 1.08, 1] }}
             transition={{ duration: 1.6, repeat: reduced ? 0 : Infinity, ease: "easeInOut" }}
           >
-            <Play className="ml-0.5 size-5" fill="currentColor" />
+            <Play className="ml-0.5 size-5" fill="currentColor" aria-hidden="true" />
           </motion.span>
         </div>
         <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[9px] font-medium text-white/80 backdrop-blur-sm">
@@ -889,13 +948,13 @@ function SceneVideo({ reduced }: { reduced: boolean }) {
         </span>
         <div className="absolute inset-x-3 bottom-3 h-1 overflow-hidden rounded-full bg-white/10">
           <motion.div
-            className="h-full rounded-full bg-[#a78bfa]"
+            className="h-full rounded-full bg-[#D3D8DD]"
             animate={reduced ? { width: "45%" } : { width: ["6%", "100%"] }}
             transition={reduced ? undefined : { duration: 3.2, repeat: Infinity, ease: "linear" }}
           />
         </div>
       </div>
-      <p className="text-center text-[11px] text-[#8e82bc]">
+      <p className="text-center text-[11px] text-[#6E7580]">
         Vídeo institucional ou de onboarding tocando direto no seu sistema
       </p>
     </motion.div>
@@ -930,8 +989,8 @@ function NetworkIllustration() {
     >
       <defs>
         <linearGradient id="zk-netline" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#ec4899" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="#9AA2AD" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#3d4149" stopOpacity="0.3" />
         </linearGradient>
       </defs>
       {lines.map(([x1, y1, x2, y2], i) => (
@@ -943,7 +1002,7 @@ function NetworkIllustration() {
           cx={cx}
           cy={cy}
           r={r}
-          className="animate-pulse fill-[#a78bfa]"
+          className="animate-pulse fill-[#A7ADB6]"
           style={{ animationDelay: `${i * 0.35}s`, animationDuration: "3s" }}
         />
       ))}
@@ -953,36 +1012,23 @@ function NetworkIllustration() {
 
 function Section({
   id,
-  eyebrow,
   title,
   description,
   children,
 }: {
   id?: string;
-  /** Só a primeira seção da página deveria usar isso — repetir em todas vira ruído (ver DESIGN.md). */
-  eyebrow?: string;
   title: string;
   description?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+    <section id={id} className="mx-auto max-w-6xl scroll-mt-16 px-4 py-20 sm:px-6 sm:py-24">
       <Reveal>
-        {eyebrow && (
-          <p className="text-sm font-semibold uppercase tracking-widest text-[#c4b5fd]">
-            {eyebrow}
-          </p>
-        )}
-        <h2
-          className={cn(
-            "max-w-2xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl",
-            eyebrow ? "mt-3" : "",
-          )}
-        >
+        <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
           {title}
         </h2>
         {description && (
-          <p className="mt-4 max-w-xl text-[#a99fcf]">{description}</p>
+          <p className="mt-4 max-w-xl text-[#9AA2AD]">{description}</p>
         )}
       </Reveal>
       <div className="mt-12">{children}</div>
@@ -1014,24 +1060,30 @@ function PlanCard({
       className={cn(
         "relative flex h-full flex-col rounded-2xl border p-7",
         highlight
-          ? "border-[#8b5cf6]/40 bg-white/[0.04] shadow-[0_30px_70px_-30px_rgba(139,92,246,0.65)]"
+          ? "border-[#9AA2AD]/40 bg-white/[0.04] shadow-[0_30px_65px_-30px_rgba(0,0,0,0.8)]"
           : "border-white/8 bg-white/[0.025]",
       )}
     >
       {badge && (
-        <span className="absolute -top-3 left-6 rounded-full bg-gradient-to-r from-[#7c3aed] to-[#ec4899] px-3 py-1 text-[11px] font-semibold text-white">
+        <span
+          className={cn(
+            "absolute -top-3 left-6 rounded-full px-3 py-1 text-[11px] font-semibold",
+            CHROME_BG,
+            CHROME_TEXT,
+          )}
+        >
           {badge}
         </span>
       )}
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#a99fcf]">{title}</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#9AA2AD]">{title}</h3>
       <p className="mt-3 flex items-baseline gap-1.5">
-        <span className="text-4xl font-semibold tracking-tight text-white">{price}</span>
-        <span className="text-sm text-[#8e82bc]">{unit}</span>
+        <span className="font-mono text-4xl font-semibold tracking-tight tnum text-white">{price}</span>
+        <span className="text-sm text-[#6E7580]">{unit}</span>
       </p>
       <ul className="mt-6 flex-1 space-y-3">
         {items.map((it) => (
-          <li key={it} className="flex items-start gap-2.5 text-sm text-[#c9c1e6]">
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#a78bfa]" />
+          <li key={it} className="flex items-start gap-2.5 text-sm text-[#A9AFB8]">
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#A7ADB6]" aria-hidden="true" />
             {it}
           </li>
         ))}
@@ -1041,13 +1093,11 @@ function PlanCard({
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-[filter,background-color]",
-          highlight
-            ? "bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-white hover:brightness-110"
-            : "border border-white/14 text-white hover:bg-white/[0.06]",
+          "mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-transform hover:-translate-y-px",
+          highlight ? cn("shine metal-sheen", CHROME_BG, CHROME_TEXT) : "border border-white/14 text-white hover:bg-white/[0.06]",
         )}
       >
-        <MessageCircle className="size-4" />
+        <MessageCircle className="size-4" aria-hidden="true" />
         {cta}
       </a>
     </div>
@@ -1066,8 +1116,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
       >
         <span className="font-medium text-white">{q}</span>
-        <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-[#8b5cf6]/15 text-[#c4b5fd]">
-          {open ? <Minus className="size-4" /> : <Plus className="size-4" />}
+        <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.06] text-[#D3D8DD]">
+          {open ? <Minus className="size-4" aria-hidden="true" /> : <Plus className="size-4" aria-hidden="true" />}
         </span>
       </button>
       {open && (
@@ -1075,7 +1125,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
           id={panelId}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="overflow-hidden px-5 pb-4 text-sm leading-relaxed text-[#a99fcf]"
+          className="overflow-hidden px-5 pb-4 text-sm leading-relaxed text-[#9AA2AD]"
         >
           {a}
         </motion.p>
@@ -1093,30 +1143,30 @@ function OrcamentoForm() {
   );
 
   const selectCls =
-    "h-12 w-full rounded-xl border border-white/12 bg-white/[0.03] px-3.5 text-sm text-white focus:border-[#8b5cf6]/60 focus:outline-none";
+    "h-12 w-full rounded-xl border border-white/12 bg-white/[0.03] px-3.5 text-sm text-white focus:border-[#9AA2AD]/60 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C7CCD2]";
 
   return (
     <div className="mt-9 rounded-2xl border border-white/8 bg-white/[0.025] p-6 text-left shadow-2xl">
-      <p className="mb-5 text-xs text-[#8e82bc]">
+      <p className="mb-5 text-xs text-[#6E7580]">
         Dica: se já souber, adiante o tipo de negócio e o prazo desejado — agiliza a resposta.
       </p>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-[#a99fcf]">O que você precisa?</span>
+          <span className="mb-1.5 block text-xs font-medium text-[#9AA2AD]">O que você precisa?</span>
           <select value={servico} onChange={(e) => setServico(e.target.value)} className={selectCls}>
-            <option className="bg-[#131022]">Site ou landing page</option>
-            <option className="bg-[#131022]">Automações e IA</option>
-            <option className="bg-[#131022]">Sistema sob medida</option>
-            <option className="bg-[#131022]">Ainda não sei</option>
+            <option className="bg-[#16181C]">Site ou landing page</option>
+            <option className="bg-[#16181C]">Automações e IA</option>
+            <option className="bg-[#16181C]">Sistema sob medida</option>
+            <option className="bg-[#16181C]">Ainda não sei</option>
           </select>
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-[#a99fcf]">Investimento previsto</span>
+          <span className="mb-1.5 block text-xs font-medium text-[#9AA2AD]">Investimento previsto</span>
           <select value={investimento} onChange={(e) => setInvestimento(e.target.value)} className={selectCls}>
-            <option className="bg-[#131022]">Até R$ 5.000</option>
-            <option className="bg-[#131022]">R$ 5.000 a R$ 15.000</option>
-            <option className="bg-[#131022]">R$ 15.000 a R$ 50.000</option>
-            <option className="bg-[#131022]">Acima de R$ 50.000</option>
+            <option className="bg-[#16181C]">Até R$ 5.000</option>
+            <option className="bg-[#16181C]">R$ 5.000 a R$ 15.000</option>
+            <option className="bg-[#16181C]">R$ 15.000 a R$ 50.000</option>
+            <option className="bg-[#16181C]">Acima de R$ 50.000</option>
           </select>
         </label>
       </div>
@@ -1124,21 +1174,25 @@ function OrcamentoForm() {
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-sm font-semibold text-white shadow-[0_14px_36px_-12px_rgba(139,92,246,0.65)] transition-[filter] hover:brightness-110"
+        className={cn(
+          "shine metal-sheen mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold shadow-[0_14px_32px_-12px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-px",
+          CHROME_BG,
+          CHROME_TEXT,
+        )}
       >
-        <MessageCircle className="size-4" />
+        <MessageCircle className="size-4" aria-hidden="true" />
         Enviar e receber propostas sem compromisso
       </a>
-      <div className="mt-4 flex flex-col items-center gap-2 text-center text-xs text-[#8e82bc] sm:flex-row sm:justify-between sm:text-left">
+      <div className="mt-4 flex flex-col items-center gap-2 text-center text-xs text-[#6E7580] sm:flex-row sm:justify-between sm:text-left">
         <p className="inline-flex items-center gap-1.5">
-          <Lock className="size-3 shrink-0" />
+          <Lock className="size-3 shrink-0" aria-hidden="true" />
           Seus dados são tratados com sigilo total (LGPD).
         </p>
         <a
           href={`mailto:${EMAIL}`}
-          className="inline-flex items-center gap-1.5 font-medium text-[#c4b5fd] transition-colors hover:text-white"
+          className="inline-flex items-center gap-1.5 font-medium text-[#D3D8DD] transition-colors hover:text-white"
         >
-          <Mail className="size-3.5 shrink-0" />
+          <Mail className="size-3.5 shrink-0" aria-hidden="true" />
           Prefere e-mail? {EMAIL}
         </a>
       </div>

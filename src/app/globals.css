@@ -20,9 +20,8 @@
   --accent: #7c3aed;
   --accent-fg: #ffffff;
   --accent-glow: rgba(139, 92, 246, 0.3);
+  --accent-deep: #5b21b6;
   --primary: #7c3aed;
-  --brand-pink: #ec4899;
-  --brand-cyan: #0891b2;
 
   --success: #16794f;
   --warning: #a15c07;
@@ -49,9 +48,8 @@
   --accent: #a78bfa;
   --accent-fg: #160b2e;
   --accent-glow: rgba(167, 139, 250, 0.34);
+  --accent-deep: #6d28d9;
   --primary: #a78bfa;
-  --brand-pink: #f472b6;
-  --brand-cyan: #22d3ee;
 
   --success: #3ddc97;
   --warning: #fbbf24;
@@ -76,6 +74,7 @@
   --color-border-strong: var(--border-strong);
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
+  --color-accent-deep: var(--accent-deep);
   --color-primary: var(--primary);
   --color-success: var(--success);
   --color-warning: var(--warning);
@@ -121,7 +120,7 @@ h3 {
 .dark body {
   background-image:
     radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, 0.09), transparent 60%),
-    radial-gradient(900px 500px at -10% 0%, rgba(236, 72, 153, 0.06), transparent 55%);
+    radial-gradient(900px 500px at -10% 0%, rgba(91, 33, 182, 0.08), transparent 55%);
   background-attachment: fixed;
 }
 
@@ -256,38 +255,7 @@ h3 {
   opacity: 0.7;
 }
 
-/* ===== Landing: aurora, marquee, float ===== */
-.aurora {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.aurora::before,
-.aurora::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  will-change: transform;
-}
-.aurora::before {
-  width: 42rem;
-  height: 42rem;
-  top: -16rem;
-  right: -8rem;
-  background: radial-gradient(circle, rgba(109, 139, 255, 0.35), transparent 62%);
-  animation: drift1 34s ease-in-out infinite alternate;
-}
-.aurora::after {
-  width: 36rem;
-  height: 36rem;
-  top: -6rem;
-  left: -10rem;
-  background: radial-gradient(circle, rgba(232, 189, 90, 0.28), transparent 62%);
-  animation: drift2 40s ease-in-out infinite alternate;
-}
-
+/* ===== Landing: marquee, float ===== */
 .animate-floaty {
   animation: floaty 7s ease-in-out infinite;
 }
@@ -316,14 +284,51 @@ h3 {
   }
 }
 
+/* ===== Metal (landing): sheen animado + varredura de brilho no hover =====
+   Utilitários aditivos — só usados na landing metalizada, inertes em qualquer
+   outra tela que não os referencie. */
+@utility metal-sheen {
+  background-size: 220% 100%;
+  animation: metal-sheen-move 6s ease-in-out infinite;
+}
+@keyframes metal-sheen-move {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.65) 50%, transparent 58%);
+  transform: translateX(-130%);
+  transition: transform 0.65s ease;
+  pointer-events: none;
+}
+.shine:hover::after,
+.shine:focus-visible::after {
+  transform: translateX(130%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient::before,
   .ambient::after,
-  .aurora::before,
-  .aurora::after,
   .animate-floaty,
-  .marquee-track {
+  .marquee-track,
+  .metal-sheen {
     animation: none !important;
+  }
+  .shine::after {
+    transition: none !important;
   }
   * {
     animation-duration: 0.001ms !important;
