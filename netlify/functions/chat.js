@@ -9,6 +9,14 @@ const MAX_MESSAGE_LENGTH = 2000;
 const RATE_LIMIT = 20;
 const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 
+// Backend próprio de leads (Windows/IIS + SQLite). O Netlify Forms
+// (chat-lead) continua ativo como rede de segurança: se este endereço
+// estiver fora do ar, o lead ainda chega por e-mail via Netlify Forms.
+// TODO: hoje aponta pra um túnel Cloudflare de teste (muda a cada
+// reinício do servidor) — trocar pelo hostname permanente assim que o
+// túnel nomeado estiver configurado com o domínio de vocês.
+const LEADS_BACKEND_URL = 'https://funky-looks-dictionary-experiencing.trycloudflare.com';
+
 const SYSTEM_PROMPT = `Você é o assistente virtual da Zkode (zkode.com.br), uma empresa brasileira de desenvolvimento de sites, automações com IA e sistemas sob medida, com gestão de projetos, custos e propostas em um painel próprio.
 
 ## Seu objetivo
@@ -63,19 +71,38 @@ function isValidMessage(m) {
 }
 
 async function saveLead(input, siteOrigin) {
-  const body = new URLSearchParams({
+  const nome = String(input.nome || '').slice(0, 200);
+  const contato = String(input.contato || '').slice(0, 200);
+  const interesse = String(input.interesse || '').slice(0, 300);
+  const isEmail = contato.indexOf('@') !== -1;
+
+  const netlifyBody = new URLSearchParams({
     'form-name': 'chat-lead',
-    nome: String(input.nome || '').slice(0, 200),
-    contato: String(input.contato || '').slice(0, 200),
-    interesse: String(input.interesse || '').slice(0, 300),
+    nome,
+    contato,
+    interesse,
   }).toString();
 
-  const res = await fetch(siteOrigin + '/', {
+  const netlifyOk = fetch(siteOrigin + '/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
-  });
-  return res.ok;
+    body: netlifyBody,
+  }).then((res) => res.ok).catch(() => false);
+
+  const backendOk = fetch(LEADS_BACKEND_URL + '/api/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nome,
+      email: isEmail ? contato : '',
+      whatsapp: isEmail ? '' : contato,
+      mensagem: interesse,
+      origem: 'chat',
+    }),
+  }).then((res) => res.ok).catch(() => false);
+
+  const [a, b] = await Promise.all([netlifyOk, backendOk]);
+  return a || b;
 }
 
 exports.handler = async (event) => {
